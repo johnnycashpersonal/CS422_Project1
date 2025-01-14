@@ -9,7 +9,7 @@
 
 **Use Cases**
 
--(1) A student needs to take Math 111 this term, and there are many different faculty teaching the
+- (1) A student needs to take Math 111 this term, and there are many different faculty teaching the
 class. The student wants to know which instructors are most likely to give As, and which are
 most likely to give Ds and Fs. The student uses the system to compare the grading history of
 the instructors teaching this term, side-by-side.
@@ -63,6 +63,6 @@ new data.
 ## Initial System
 
 - The system that is delivered should not require any administrator steps to convert or prepare data
-for the system other than (optionally) setting up a database (if your system uses a database). But,
-for example, there should not be any web scraping or data conversion required for the initial use
+for the system other than (optionally) setting up a database (if your system uses a database). 
+- But, for example, there should not be any web scraping or data conversion required for the initial use
 of the system.
