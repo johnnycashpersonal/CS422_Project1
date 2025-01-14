@@ -1,69 +1,65 @@
 # Initial Project Plan & SDS
-
 # Project Plan
-*Manu*
-- A management plan. How is your team organized? How is the work divided among team members? How does your team make decisions? How will your team meet and how will it communicate.
 
+A management plan. How is your team organized? How is the work divided among team members? How does your team make decisions? How will your team meet and how will it communicate.
+- Tasks are divided based on expertise and interest to maximize efficiency:
 
-**Tasks are divided based on expertise and interest to maximize efficiency:**
-Team Organization:
-
+**Team Organization:**
 *John*: Backend Developer
-Manages data processing and sets up the database architecture.
+- Manages data processing and sets up the database architecture.
 Develops and optimizes queries to efficiently gather and process data from the database.
 
 *Manu*: Frontend Developer
-Designs and implements the user interface using Tkinter to ensure usability and an optimized user experience.
-Integrates data visualizations and filtering options into the frontend.
+- Designs and implements the user interface using Tkinter to ensure usability and an optimized user experience.
+- Integrates data visualizations and filtering options into the frontend.
 
 *Tim*: Admin Instructions
-Develops backend controls and tools for system administrators, including database integration and advanced processing features.
-Ensures admin utilities are intuitive and provide seamless data management.
+- Develops backend controls and tools for system administrators, including database integration and advanced processing features.
+- Ensures admin utilities are intuitive and provide seamless data management.
 
 *Myles*: Faculty Features and Advanced Data Views
-Implements faculty-related features, such as filtering by department, course level, and faculty type.
-Designs and builds side-by-side comparison visualizations for faculty grading distributions.
-Creates advanced data views, ensuring they are clear, comprehensive, and user-friendly.
+- Implements faculty-related features, such as filtering by department, course level, and faculty type.
+- Designs and builds side-by-side comparison visualizations for faculty grading distributions.
+- Creates advanced data views, ensuring they are clear, comprehensive, and user-friendly.
 
 
 
-Decision-Making:
-
+**Decision-Making:**
 Decisions are made collaboratively during weekly meetings. If a question needs to be answered more quikly they can be donw so through the shared groupchat.
 
 Communication:
+- Weekly meetings will be conducted at a time fit for everyone (virtual/in-person) to discuss progress and next steps.
+- Day-to-day communication will take place over text groupchat, and emails used for sharing documents.
+- GitHub will be used for version control, task tracking, and code reviews.
 
-Weekly meetings will be conducted at a time fit for everyone (virtual/in-person) to discuss progress and next steps.
-Day-to-day communication will take place over text groupchat, and emails used for sharing documents.
-GitHub will be used for version control, task tracking, and code reviews.
 
-
-- Work breakdown schedule (with > 10 milestones) and project schedule (who will do what).
+**Work breakdown schedule**
 
 **Phase 1: Project Planning and Design (Jan 13–17):**
-Finalize system architecture and database schema. (JOHN)
-Create initial UI wireframes. (MANU)
+-Finalize system architecture and database schema.(JOHN)
+-Create initial UI wireframes.(MANU)
+
 Prepare and submit project documentation. (TEAM)
 
 **Phase 2: Foundation Development (Jan 18–22):**
-Set up the MongoDB environment. (JOHN/MANU)
-Implement database connection utilities (JOHN/MANU)
-Create and validate the initial database schema (JOHN/MANU)
+-Set up the MongoDB environment. (JOHN/MANU)
+-Implement database connection utilities (JOHN/MANU)
+-Create and validate the initial database schema (JOHN/MANU)
 
 **Phase 3: Core Features Development (Jan 23–27):**
-Develop the Tkinter GUI framework (MANU)
-Implement basic data querying capabilities
-Integrate data visualization (MYLES)
+-Develop the Tkinter GUI framework (MANU)
+-Implement basic data querying capabilities
+-Integrate data visualization (MYLES)
 
 **Phase 4: Advanced Features (Jan 28–31):**
-Add advanced filtering and comparison tools (MYLES)
-Implement side-by-side visualizations (MYLES)
-Develop admin tools for data management (TIM)
+-Add advanced filtering and comparison tools (MYLES)
+-Implement side-by-side visualizations (MYLES)
+-Develop admin tools for data management (TIM)
 
 **Phase 5: Testing and Refinement (Feb 1–4):**
-Conduct unit and integration tests (TEAM)
-Optimize performance and debug (TEAM)
-Finalize user and admin documentation (TIM)
+-Conduct unit and integration tests (TEAM)
+-Optimize performance and debug (TEAM)
+-Finalize user and admin documentation (TIM) 
 
 
 
