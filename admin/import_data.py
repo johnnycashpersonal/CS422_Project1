@@ -1,28 +1,21 @@
-# admin/import_data.py
-
 """
 Data Import Module for EasyA Grade Analysis System
 
 This module handles the initial data population and subsequent data updates for the EasyA system.
 It processes two main data sources:
-1. Grade distribution data from the Daily Emerald (gradedata.js)
+1. Grade distribution data from the Daily Emerald (converted from gradedata.js to CSV)
 2. Faculty information scraped from the 2014-2015 UO Course Catalog
 
 Key responsibilities:
-- Parsing and validating input data files
+- Parsing and validating CSV input data files
 - Converting raw data into appropriate MongoDB document format
 - Managing bulk insertions into the database
 - Maintaining data consistency across collections
 - Supporting the administrator use case for data updates
-
-This module is essential for:
-1. Initial system setup with historical grade data (2013-2016)
-2. Administrator workflows for updating system data
-3. Maintaining consistency between grade data and faculty information
-4. Supporting the Natural Sciences department focus
 """
 
-import json
+import csv
+from typing import List, Dict, Any
 from pymongo import MongoClient
 
 class DataImporter:
@@ -35,91 +28,135 @@ class DataImporter:
         """
         self.db = db_manager
 
-    def import_grade_data(self, json_file_path):
+    def import_grade_data(self, csv_file_path: str) -> None:
         """
-        Import grade distribution data from the provided JSON file.
+        Import grade distribution data from the provided CSV file.
         
-        This method processes the grade data file (gradedata.js) and populates two collections:
-        1. courses: Unique course entries with department, number, and level information
-        2. grade_distributions: Individual grade distribution records
-        
-        The method handles:
-        - Course ID generation (e.g., "MATH111")
-        - Course level calculation (e.g., 100-level from course number 111)
-        - Data type conversions (strings to integers where needed)
-        
-        Args:
-            json_file_path: Path to the grade data JSON file
-                          (typically converted from gradedata.js)
-        
-        Note:
-            This method uses bulk insert operations for better performance
-            when handling large datasets.
+        Maps CSV columns to database fields with robust error handling for:
+        - Non-numeric values ('#VALUE!' entries)
+        - Invalid course numbers
+        - Missing or malformed data
+        - Type conversion errors
+        - UO quarter system academic year calculation
         """
-        with open(json_file_path, 'r') as file:
-            data = json.load(file)
-            
-        # Process and insert courses
-        processed_courses = []
-        for grade_entry in data:
-            course = {
-                'course_id': f"{grade_entry['department']}{grade_entry['number']}",
-                'department': grade_entry['department'],
-                'number': int(grade_entry['number']),
-                'level': (int(grade_entry['number']) // 100) * 100
-            }
-            processed_courses.append(course)
+        required_columns = {
+            'TERM', 'TERM_DESC', 'SUBJ', 'NUMB', 'INSTRUCTOR',
+            'aprec', 'dprec', 'fprec', 'TOT_NON_W'
+        }
         
-        if processed_courses:
-            self.db.courses.insert_many(processed_courses)
-
-        # Process and insert grade distributions
+        processed_courses = set()
         processed_grades = []
-        for grade_entry in data:
-            grade_dist = {
-                'course_id': f"{grade_entry['department']}{grade_entry['number']}",
-                'instructor_name': grade_entry['instructor'],
-                'year': grade_entry['year'],
-                'term': grade_entry['term'],
-                'percent_a': grade_entry['percent_a'],
-                'percent_df': grade_entry['percent_df'],
-                'total_students': grade_entry['total_students']
-            }
-            processed_grades.append(grade_dist)
+        skipped_rows = 0
+        year_counts = {}
         
+        with open(csv_file_path, 'r', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            
+            if not reader.fieldnames:
+                raise ValueError("CSV file is empty or improperly formatted")
+            
+            missing_columns = required_columns - set(reader.fieldnames)
+            if missing_columns:
+                raise ValueError(f"Missing required columns: {missing_columns}")
+            
+            for row_num, row in enumerate(reader, start=2):
+                try:
+                    # Extract and validate year from TERM
+                    term = str(row['TERM']).strip()
+                    if len(term) != 6:
+                        print(f"Warning: Invalid TERM format in row {row_num}: {term}")
+                        skipped_rows += 1
+                        continue
+                    
+                    calendar_year = int(term[:4])
+                    quarter = int(term[4:])
+                    
+                    # Adjust year based on UO's quarter system
+                    # 01 = Fall (stays in same calendar year)
+                    # 02, 03, 04 = Winter, Spring, Summer (belong to next calendar year)
+                    academic_year = calendar_year + 1 if quarter in (2, 3, 4) else calendar_year
+                    
+                    if not (2013 <= academic_year <= 2016):
+                        print(f"Warning: Academic year {academic_year} outside expected range in row {row_num}")
+                    
+                    # Track year distribution
+                    year_counts[academic_year] = year_counts.get(academic_year, 0) + 1
+                    
+                    # Handle course number
+                    try:
+                        course_number = int(''.join(filter(str.isdigit, row['NUMB'])))
+                        if course_number == 0:
+                            print(f"Warning: Invalid course number in row {row_num}: {row['NUMB']}")
+                            skipped_rows += 1
+                            continue
+                    except ValueError:
+                        print(f"Warning: Non-numeric course number in row {row_num}: {row['NUMB']}")
+                        skipped_rows += 1
+                        continue
+                    
+                    # Create course entry
+                    course = {
+                        'course_id': f"{row['SUBJ']}{course_number}",
+                        'department': row['SUBJ'].strip(),
+                        'number': course_number,
+                        'level': (course_number // 100) * 100
+                    }
+                    
+                    # Handle percentage conversions
+                    def safe_float(value: str, default: float = 0.0) -> float:
+                        try:
+                            if value in ('#VALUE!', '', 'NA', 'N/A'):
+                                return default
+                            return float(value)
+                        except (ValueError, TypeError):
+                            return default
+
+                    percent_a = safe_float(row['aprec'])
+                    percent_d = safe_float(row['dprec'])
+                    percent_f = safe_float(row['fprec'])
+                    
+                    # Validate percentages
+                    if percent_a == 0 and percent_d == 0 and percent_f == 0:
+                        print(f"Warning: All percentages zero/invalid in row {row_num}")
+                        skipped_rows += 1
+                        continue
+                    
+                    # Add course if not already processed
+                    if course['course_id'] not in processed_courses:
+                        processed_courses.add(course['course_id'])
+                    
+                    # Create grade distribution entry
+                    grade_dist = {
+                        'course_id': course['course_id'],
+                        'instructor_name': row['INSTRUCTOR'].strip(),
+                        'year': academic_year,
+                        'term': row['TERM_DESC'].strip(),
+                        'percent_a': percent_a,
+                        'percent_df': percent_d + percent_f,
+                        'total_students': int(row['TOT_NON_W']) if row['TOT_NON_W'] else 0
+                    }
+                    
+                    processed_grades.append(grade_dist)
+                    
+                except Exception as e:
+                    print(f"Warning: Error in row {row_num}: {str(e)}")
+                    skipped_rows += 1
+                    continue
+        
+        # Print detailed import summary
+        print("\nImport Summary:")
+        print(f"Total rows processed: {len(processed_grades)}")
+        print(f"Rows skipped: {skipped_rows}")
+        print(f"Unique courses: {len(processed_courses)}")
+        print("\nYear Distribution:")
+        for year in sorted(year_counts.keys()):
+            print(f"Year {year}: {year_counts[year]} records")
+        
+        # Insert processed data
+        if processed_courses:
+            self.db.courses.insert_many(
+                [{'course_id': id, 'department': id[:-3], 'number': int(id[-3:]), 
+                'level': (int(id[-3:]) // 100) * 100} for id in processed_courses]
+            )
         if processed_grades:
             self.db.grade_distributions.insert_many(processed_grades)
-
-    def import_faculty_data(self, json_file_path):
-        """
-        Import faculty information from the scraped course catalog data.
-        
-        This method processes the faculty data scraped from the 2014-2015 UO Course Catalog
-        and populates the instructors collection. This data is crucial for:
-        - Distinguishing between regular faculty and other instructors
-        - Supporting the "All Instructors" vs "Regular Faculty" filtering requirement
-        - Maintaining accurate department affiliations
-        
-        Args:
-            json_file_path: Path to the JSON file containing scraped faculty data
-        
-        Note:
-            - All imported faculty are marked as regular faculty (is_regular_faculty = True)
-            - Faculty can be associated with multiple departments
-            - This data is used in conjunction with grade data to support
-              the instructor filtering feature
-        """
-        with open(json_file_path, 'r') as file:
-            faculty_data = json.load(file)
-            
-        processed_faculty = []
-        for faculty in faculty_data:
-            instructor = {
-                'name': faculty['name'],
-                'is_regular_faculty': True,
-                'departments': faculty['departments']
-            }
-            processed_faculty.append(instructor)
-            
-        if processed_faculty:
-            self.db.instructors.insert_many(processed_faculty)
