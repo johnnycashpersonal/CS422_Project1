@@ -12,11 +12,14 @@
 The Project will be executed in five main phases from January 13th to February 5th, 2024.
 
 **Phase 1: Project Planning and Design (Jan 13-17)**
+
 - First we will establish the system architecture, database schema, and user interface design. 
 - This phase concludes with the January 17th documentation deadline for Project Plan and SDS Submission.
 
 **Phase 2: Foundation Development (Jan 18-22)**
-This includes setting up the local MongoDB environment, creating the database management system, and building data processing utilities. The focus will be on establishing robust data handling capabilities and implementing the basic data models that will support all future development.
+
+- Includes setting up the local MongoDB environment, creating the database management system, and building data processing utilities. 
+- Focus will be on establishing robust data handling capabilities and implementing the basic data models that will support all future development.
 
 **Phase 3: Core Features Development (Jan 23-27)**
 
@@ -81,8 +84,6 @@ This includes setting up the local MongoDB environment, creating the database ma
  - The planning phase must produce comprehensive documentation and clear requirements. 
  - The foundation phase requires validated data processing and storage capabilities. 
  - Core and advanced feature phases must deliver working visualizations and user interface components. The final phase ensures all functionality meets performance requirements and is thoroughly tested.
-
-- A rationale for the build plan. Why have you broken the system into these parts, and why have you chosen these particular steps to build the system? What are your risks and your risk reduction strategies?
 
 ### SDS
 *Myles*
