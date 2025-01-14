@@ -1,13 +1,13 @@
 # Initial Project Plan & SDS
 
-### Project Plan
+# Project Plan
 *Manu*
 - A management plan. How is your team organized? How is the work divided among team members? How does your team make decisions? How will your team meet and how will it communicate.
 - Work breakdown schedule (with > 10 milestones) and project schedule (who will do what).
 - Monitoring and reporting: How individual and project progress will be monitored to keep track of who did what and when did they do it?
 
 
-### EasyA Project Build Plan
+## EasyA Project Build Plan
 
 The Project will be executed in five main phases from January 13th to February 5th, 2024.
 
@@ -57,7 +57,7 @@ The Project will be executed in five main phases from January 13th to February 5
 - Matplotlib
 - PyMongo
 
-### Build Plan Rationale
+## Build Plan Rationale
 
 **Development Approach**
 
@@ -85,7 +85,7 @@ The Project will be executed in five main phases from January 13th to February 5
  - The foundation phase requires validated data processing and storage capabilities. 
  - Core and advanced feature phases must deliver working visualizations and user interface components. The final phase ensures all functionality meets performance requirements and is thoroughly tested.
 
-### SDS
+## SDS
 *Myles*
 - A description of the product you intend to build. This should describe the externally visible behavior of your product as precisely as possible, but it should be concise and clear.
 - An overall design description. What are the major parts of your system, and how do they fit together?
