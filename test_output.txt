@@ -1,4 +1,4 @@
-Test Run: 2025-01-14 15:14:49
+Test Run: 2025-01-15 14:58:55
 ================================================================================
 Cleaning existing database collections...
 Importing data from CSV...
@@ -31643,8 +31643,8 @@ Department Average A Rate: 69.9%
 Department Average D/F Rate: 0.0%
 
 Top 3 Instructors by Classes Taught:
-  Lachman, Charles: 1 classes
   Davis, Howard P.: 1 classes
+  Lachman, Charles: 1 classes
 
 Department: AAAP
 ----------------------------------------
@@ -31657,7 +31657,7 @@ Department Average D/F Rate: 0.0%
 Top 3 Instructors by Classes Taught:
   Carter, Elizabeth Jean: 4 classes
   Sardell, Shannon Mical: 3 classes
-  Eisemann, Eric Lee: 2 classes
+  Heath, Kingston W.: 2 classes
 
 Department: AAD
 ----------------------------------------
@@ -31696,7 +31696,7 @@ Department Average D/F Rate: 4.8%
 Top 3 Instructors by Classes Taught:
   Butler, Brian Culley: 34 classes
   Mildon, Tonya Raylynn: 31 classes
-  Evans, Bruce Alan: 30 classes
+  Rogers, Dennis Mehmet: 30 classes
 
 Department: AFR
 ----------------------------------------
@@ -31822,8 +31822,8 @@ Department Average A Rate: 56.9%
 Department Average D/F Rate: 3.9%
 
 Top 3 Instructors by Classes Taught:
-  Brackens, Diedrick Tyrell: 3 classes
   Heinitz, Krista Noel: 3 classes
+  Brackens, Diedrick Tyrell: 3 classes
   Ghosh, Surabhi: 2 classes
 
 Department: ARTM
@@ -31850,7 +31850,7 @@ Department Average D/F Rate: 2.1%
 Top 3 Instructors by Classes Taught:
   Choquette, Colleen Sue: 9 classes
   Warpinski, Terri L.: 8 classes
-  Powell, Dan T.: 4 classes
+  Bagby, Jonathan Edward: 4 classes
 
 Department: ARTP
 ----------------------------------------
@@ -31876,7 +31876,7 @@ Department Average D/F Rate: 3.8%
 Top 3 Instructors by Classes Taught:
   Liu, Charlene C.: 5 classes
   Putnam, Bryan M.: 4 classes
-  Dikareva, Anna Leonidovna: 1 classes
+  Moore, Joseph Robert: 1 classes
 
 Department: ARTS
 ----------------------------------------
@@ -31924,8 +31924,8 @@ Department Average A Rate: 31.1%
 Department Average D/F Rate: 6.1%
 
 Top 3 Instructors by Classes Taught:
-  Schombert, James M.: 12 classes
   Bothun, Gregory: 12 classes
+  Schombert, James M.: 12 classes
   Fisher, Robert Scott: 8 classes
 
 Department: BA
@@ -31978,7 +31978,7 @@ Department Average D/F Rate: 0.0%
 Top 3 Instructors by Classes Taught:
   Rossi, William: 3 classes
   McNeely, Ian Farrell: 2 classes
-  Vandegrift, Eleanor Vivienne H: 1 classes
+  Cramer, Jane Theresekellett: 1 classes
 
 Department: CDS
 ----------------------------------------
@@ -31990,8 +31990,8 @@ Department Average D/F Rate: 2.7%
 
 Top 3 Instructors by Classes Taught:
   McLaughlin, Karen Anne: 13 classes
-  Moore, Heather Bair: 9 classes
   Swem, Katherine: 9 classes
+  Moore, Heather Bair: 9 classes
 
 Department: CFT
 ----------------------------------------
@@ -32003,8 +32003,8 @@ Department Average D/F Rate: 0.0%
 
 Top 3 Instructors by Classes Taught:
   Kim, Hyejin: 6 classes
-  Brown, Tiffany Brook: 5 classes
   Hawkins, Blendine Perreire: 5 classes
+  Brown, Tiffany Brook: 5 classes
 
 Department: CH
 ----------------------------------------
@@ -32108,7 +32108,7 @@ Department Average D/F Rate: 1.6%
 Top 3 Instructors by Classes Taught:
   Farrar, Jessica Diane: 12 classes
   Skowron, Elizabeth Anne: 4 classes
-  Ngo, Christine Lam: 3 classes
+  Shetty, Amala: 3 classes
 
 Department: CRES
 ----------------------------------------
@@ -32134,7 +32134,7 @@ Department Average D/F Rate: 2.7%
 Top 3 Instructors by Classes Taught:
   Hongo, Garrett K.: 4 classes
   Haschemeyer, Andrew Otis: 4 classes
-  Payer, Ishelle Marie: 3 classes
+  Keyler, Jane Lauren: 3 classes
 
 Department: DAN
 ----------------------------------------
@@ -32145,9 +32145,9 @@ Department Average A Rate: 66.4%
 Department Average D/F Rate: 1.9%
 
 Top 3 Instructors by Classes Taught:
-  Kennedy, Walter Cleveland: 10 classes
-  Mockli, Shannon M.: 10 classes
+  Garner, Brad Timothy: 10 classes
   Chatfield, Steven: 10 classes
+  Mockli, Shannon M.: 10 classes
 
 Department: DANC
 ----------------------------------------
@@ -32159,8 +32159,8 @@ Department Average D/F Rate: 2.0%
 
 Top 3 Instructors by Classes Taught:
   Morrison, Faith H.: 12 classes
-  Honka, Rita Jean: 10 classes
   Andersen, Hannah Kay: 10 classes
+  Honka, Rita Jean: 10 classes
 
 Department: DSC
 ----------------------------------------
@@ -32173,7 +32173,7 @@ Department Average D/F Rate: 1.4%
 Top 3 Instructors by Classes Taught:
   Yin, Fang: 19 classes
   Barnes, Cathy Eylene: 9 classes
-  Cil, Eren Basar: 8 classes
+  McQuaid, Michael Joseph: 8 classes
 
 Department: EALL
 ----------------------------------------
@@ -32185,8 +32185,8 @@ Department Average D/F Rate: 3.4%
 
 Top 3 Instructors by Classes Taught:
   Kim, Dong Hoon: 4 classes
-  Arnold, Michael John: 2 classes
   Jing-Schmidt, Zhuo: 2 classes
+  Arnold, Michael John: 2 classes
 
 Department: EC
 ----------------------------------------
@@ -32355,7 +32355,7 @@ Department Average D/F Rate: 6.8%
 Top 3 Instructors by Classes Taught:
   Blackwell, David Lewis: 24 classes
   Miles, Gregory Allen: 20 classes
-  Tozer, Craig Hampton: 17 classes
+  Baxter, Mary Elizabeth: 17 classes
 
 Department: GER
 ----------------------------------------
@@ -32403,7 +32403,7 @@ Department Average D/F Rate: 0.6%
 Top 3 Instructors by Classes Taught:
   Shoop, Casey Jon: 19 classes
   Williams, Timothy Joseph: 12 classes
-  Peixoto, Michael Joseph: 11 classes
+  Howell, Erik Ocean: 11 classes
 
 Department: HIST
 ----------------------------------------
@@ -32468,7 +32468,7 @@ Department Average D/F Rate: 3.9%
 Top 3 Instructors by Classes Taught:
   Hindery, Derrick Leonard: 11 classes
   Martin, Galen Ray: 9 classes
-  Johnson, William Henry: 8 classes
+  Yarris, Kristin Elizabeth: 8 classes
 
 Department: ITAL
 ----------------------------------------
@@ -32533,7 +32533,7 @@ Department Average D/F Rate: 2.6%
 Top 3 Instructors by Classes Taught:
   Oh, Bomi: 17 classes
   Lee, Eun Young: 15 classes
-  Park, Kyae-Sung: 8 classes
+  Kim, Dong Hoon: 8 classes
 
 Department: LA
 ----------------------------------------
@@ -32546,7 +32546,7 @@ Department Average D/F Rate: 1.8%
 Top 3 Instructors by Classes Taught:
   Keeler, Harper Brown: 19 classes
   Godfrey, Anne C.: 8 classes
-  Duhrkoop-Galas, Arica Laine: 7 classes
+  Eischeid, Mark Romley: 7 classes
 
 Department: LAS
 ----------------------------------------
@@ -32559,7 +32559,7 @@ Department Average D/F Rate: 2.6%
 Top 3 Instructors by Classes Taught:
   Martin, Galen Ray: 3 classes
   Urioste Guglielmone, Sebastian Santiago: 2 classes
-  Da Silva, Simone Cavalalcante: 1 classes
+  Rubado-Mejia, Annette Marie: 1 classes
 
 Department: LAT
 ----------------------------------------
@@ -32572,7 +32572,7 @@ Department Average D/F Rate: 11.3%
 Top 3 Instructors by Classes Taught:
   Calhoon, Cristina: 6 classes
   Urso, Samantha Nicole: 2 classes
-  Wilson, Malcolm: 1 classes
+  Jaeger, Mary: 1 classes
 
 Department: LAW
 ----------------------------------------
@@ -32636,7 +32636,7 @@ Department Average D/F Rate: 14.3%
 Top 3 Instructors by Classes Taught:
   Nganou, Jean Bernard: 36 classes
   Hervert, Fred: 31 classes
-  Tingey, Craig Choules: 25 classes
+  Harker, Hayden Michael: 25 classes
 
 Department: MDVL
 ----------------------------------------
@@ -32685,8 +32685,8 @@ Department Average D/F Rate: 0.5%
 
 Top 3 Instructors by Classes Taught:
   Schneider, Leah Anne: 23 classes
-  Yuan, Hong: 12 classes
   Veltri, Frank R.: 12 classes
+  Yuan, Hong: 12 classes
 
 Department: MUE
 ----------------------------------------
@@ -32712,7 +32712,7 @@ Department Average D/F Rate: 3.8%
 Top 3 Instructors by Classes Taught:
   Denny, Michael P.: 7 classes
   Woideck, Carl Eric: 5 classes
-  Parkess, Christian Adam: 1 classes
+  Wayte, Larry A.: 1 classes
 
 Department: MUP
 ----------------------------------------
@@ -32738,7 +32738,7 @@ Department Average D/F Rate: 3.0%
 Top 3 Instructors by Classes Taught:
   Brown, Andiel Teshua: 30 classes
   Pack, Timothy S.: 24 classes
-  Jacobs, David Michael: 14 classes
+  Wayte, Larry A.: 14 classes
 
 Department: OBA
 ----------------------------------------
@@ -32751,7 +32751,7 @@ Department Average D/F Rate: 0.9%
 Top 3 Instructors by Classes Taught:
   Yin, Fang: 9 classes
   Murthy, N. Narasimha: 5 classes
-  Hu, Xing: 4 classes
+  Fang, Yue: 4 classes
 
 Department: OBRT
 ----------------------------------------
@@ -32839,8 +32839,8 @@ Department Average A Rate: 73.9%
 Department Average D/F Rate: 0.0%
 
 Top 3 Instructors by Classes Taught:
-  Morrell, Scott Albert: 1 classes
   Steeves, H Leslie: 1 classes
+  Morrell, Scott Albert: 1 classes
 
 Department: OJIL
 ----------------------------------------
@@ -33162,7 +33162,7 @@ Department Average D/F Rate: 3.4%
 Top 3 Instructors by Classes Taught:
   Peterson, Joshua Tate: 25 classes
   Jenkins, Timothy: 18 classes
-  Belitz, Dietrich: 9 classes
+  Micklavzina, Stanley J.: 9 classes
 
 Department: PORT
 ----------------------------------------
@@ -33237,9 +33237,9 @@ Department Average A Rate: 70.7%
 Department Average D/F Rate: 0.7%
 
 Top 3 Instructors by Classes Taught:
-  Millar, Lanie M.: 2 classes
-  Gould, Evlyn: 2 classes
   Herrmann, Gina Ann: 2 classes
+  Gould, Evlyn: 2 classes
+  Millar, Lanie M.: 2 classes
 
 Department: RUSS
 ----------------------------------------
@@ -33265,7 +33265,7 @@ Department Average D/F Rate: 3.6%
 Top 3 Instructors by Classes Taught:
   Bichsel, Ruth Jean: 41 classes
   Connelly, Michael Patrick: 23 classes
-  Christensen, Charles Ray: 13 classes
+  Leeds, Michael: 13 classes
 
 Department: SBUS
 ----------------------------------------
@@ -33316,8 +33316,8 @@ Department Average D/F Rate: 2.4%
 
 Top 3 Instructors by Classes Taught:
   Arias Anrango, Rafael: 29 classes
-  Whalen, Nathan John: 28 classes
   Moore, Bryan Jerome: 28 classes
+  Zabala, Gloria: 28 classes
 
 Department: SPD
 ----------------------------------------
@@ -33340,8 +33340,8 @@ Department Average D/F Rate: 1.3%
 
 Top 3 Instructors by Classes Taught:
   Herr, Cynthia Marie: 21 classes
-  Clifford, Jantina Rochelle: 7 classes
   Pribble, Lois M.: 7 classes
+  Clifford, Jantina Rochelle: 7 classes
 
 Department: SPSY
 ----------------------------------------
@@ -33401,7 +33401,7 @@ Department Average D/F Rate: 6.7%
 
 Top 3 Instructors by Classes Taught:
   Nuetzman, Amy L.: 3 classes
-  Summers, Stephen James: 2 classes
+  Geller, Jennifer Hubbard: 2 classes
   Dusseau, Rebecca Sue: 2 classes
 
 Department: WGS
@@ -33413,9 +33413,9 @@ Department Average A Rate: 40.1%
 Department Average D/F Rate: 4.6%
 
 Top 3 Instructors by Classes Taught:
+  Favara, Jeremiah Blaise: 6 classes
   Raiskin, Judith: 6 classes
   Reis, Elizabeth: 6 classes
-  Favara, Jeremiah Blaise: 6 classes
 
 Department: WR
 ----------------------------------------
@@ -33427,47 +33427,122 @@ Department Average D/F Rate: 4.1%
 
 Top 3 Instructors by Classes Taught:
   Copperman, Michael David: 28 classes
-  Bartenstein, Virginia Amanda: 27 classes
-  Bryant-Berg, Kristy Ann: 27 classes
+  Stodola, Kaitlin Paige: 27 classes
+  Boscha, Tina Renee: 27 classes
 
 Detailed Course Analysis:
 ================================================================================
 
-Course: LAW648
-Department: LAW
-Level: 600
+Course: WGS101
+Department: WGS
+Level: 100
 
-Statistics for LAW648:
-Years offered: 2014 - 2015
+Statistics for WGS101:
+Years offered: 2013 - 2016
 
-  Instructor: Coles-Bjerre, Andrea
-  Average As: 41.7%
-  Average DFs: 0.0%
+  Instructor: Rognlie, Dana Lauren
+  Average As: 12.5%
+  Average DFs: 4.1%
   Classes taught: 2
 
-Course: GER407
-Department: GER
+  Instructor: Stewart, Lauren Diane
+  Average As: 34.6%
+  Average DFs: 9.4%
+  Classes taught: 4
+
+  Instructor: Williams, Mara Corinne
+  Average As: 28.1%
+  Average DFs: 7.2%
+  Classes taught: 4
+
+  Instructor: Yalon, Alexis Jacquelyn
+  Average As: 28.5%
+  Average DFs: 5.6%
+  Classes taught: 2
+
+  Instructor: Miller, Elizabeth Carroll
+  Average As: 50.9%
+  Average DFs: 8.2%
+  Classes taught: 2
+
+  Instructor: Das, Madhurima
+  Average As: 32.7%
+  Average DFs: 5.4%
+  Classes taught: 4
+
+  Instructor: Ibrahimhakkioglu, Fulden
+  Average As: 20.2%
+  Average DFs: 11.6%
+  Classes taught: 2
+
+  Instructor: Raiskin, Judith
+  Average As: 18.8%
+  Average DFs: 4.7%
+  Classes taught: 1
+
+  Instructor: Reese, David M.
+  Average As: 39.0%
+  Average DFs: 9.8%
+  Classes taught: 2
+
+  Instructor: Rondot, Sarah Ray
+  Average As: 29.9%
+  Average DFs: 3.2%
+  Classes taught: 2
+
+  Instructor: Braun, Yvonne Alexandra
+  Average As: 15.8%
+  Average DFs: 7.8%
+  Classes taught: 2
+
+  Instructor: Favara, Jeremiah Blaise
+  Average As: 17.1%
+  Average DFs: 7.1%
+  Classes taught: 5
+
+  Instructor: Khan, Aliya Jordan
+  Average As: 57.3%
+  Average DFs: 1.4%
+  Classes taught: 2
+
+Course: GEOG202
+Department: GEOG
+Level: 200
+
+Statistics for GEOG202:
+Years offered: 2014 - 2016
+
+  Instructor: Murphy, Alexander B.
+  Average As: 36.5%
+  Average DFs: 3.4%
+  Classes taught: 2
+
+  Instructor: Ptak, Thomas Walter
+  Average As: 32.3%
+  Average DFs: 9.2%
+  Classes taught: 1
+
+Course: GEOG442
+Department: GEOG
 Level: 400
 
-Statistics for GER407:
-Years offered: 2014 - 2014
+Statistics for GEOG442:
+Years offered: 2014 - 2016
 
-  Instructor: Stern, Michael J.
-  Average As: 64.7%
-  Average DFs: 5.9%
-  Classes taught: 1
-
-Course: MGMT608
-Department: MGMT
-Level: 600
-
-Statistics for MGMT608:
-Years offered: 2015 - 2015
-
-  Instructor: Skov, Joshua
-  Average As: 54.5%
+  Instructor: Hardwick, Susan Wiley
+  Average As: 92.0%
   Average DFs: 0.0%
   Classes taught: 1
+
+  Instructor: Kaplan, David Howard
+  Average As: 30.0%
+  Average DFs: 0.0%
+  Classes taught: 1
+
+  Instructor: Meehan, Katharine
+  Average As: 41.0%
+  Average DFs: 1.9%
+  Classes taught: 2
 
 Final Database Summary:
 ================================================================================
