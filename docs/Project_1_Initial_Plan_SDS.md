@@ -164,4 +164,65 @@ The Project will be executed in five main phases from January 13th to February 5
 
 *Tim*
 - Each major subsystem should be explained using a separate static model and dynamic model. All diagrams must be clear and understandable.
-- Design Rationale. Why did you chose this particular design? What are the main organizing principles that you used to break your system into parts?
+
+## **Design Rationale**
+
+1. **Reason for Each Module**
+   - **View Layer (Tkinter GUI):**  
+     Tkinter is selected as the GUI framework for its simplicity, Python support, and alignment with project constraints. The primary goal is to provide students with a simple interface for visualizing and comparing grade data. Future refinements will most likely explore aesthetic customizations.  
+   - **Controller Layer (Event Handlers & Logic):**  
+     This layer is planned to manage user inputs and connect the GUI with the data processing and visualization logic. By centralizing the logic here, we aim to maintain a clean separation between the interface and data operations.  
+   - **Data Access Layer (MongoDB Interface):**  
+     MongoDB is chosen for its ability to handle large datasets dynamically and flexibly. In the initial implementation, this layer will focus on efficient data queries, with optimizations and enhancements planned for later stages.  
+   - **Admin Tools (Integrated Admin GUI):**  
+     Administrative functions, such as data import and faculty scraping, are integrated directly into the graphical user interface (GUI). This approach ensures a unified experience for administrators, making it easy to manage data without requiring familiarity with command-line tools. By incorporating these tools into the GUI, the design eliminates the need for separate interfaces and maintains consistency throughout the system.
+
+
+2. **Design Issues Addressed**
+   - **Usability:** The separation of student-facing and admin functionalities reduces complexity for each user class, improving the system’s usability.  
+   - **Scalability:** MongoDB ensures the system can handle large and evolving datasets with minimal disruption.  
+   - **Compliance with Constraints:** The design aligns with project requirements by using Tkinter for the GUI, Matplotlib for visualizations, and Python 3.x.
+
+3. **Criteria for Initial Design Decisions**
+   - Prioritize adherence to project requirements.  
+   - Focus on a modular structure to simplify iterative enhancements.  
+   - Ensure a straightforward implementation that meets functional needs while leaving room for scalability and refinement.  
+
+---
+
+## **Alternative Designs (Initial Considerations)**
+
+1. **Alternative for GUI Layer**
+   - **Option 1 (Chosen): Tkinter**  
+     - **Pros:** Simple, natively supported in Python, and aligns with constraints.  
+     - **Cons:** Limited customization and advanced widget support.  
+   - **Option 2: Matplotlib**  
+     - **Pros:** Excellent for creating advanced and highly customizable visualizations. Easily integrates with Python for graphing and plotting.  
+     - **Cons:** Primarily a visualization library, not a full GUI framework, making it less suitable for building interactive interfaces. Requires additional effort to handle user interactions effectively.
+
+2. **Alternative for Database**
+   - **Option 1 (Chosen): MongoDB**  
+     - **Pros:** Flexible schema, scalable for large datasets, and integrates well with Python. Also our group is familiar with this Database.
+     - **Cons:** Requires additional learning curve for administrators unfamiliar with NoSQL.  
+   - **Option 2: SQLite**  
+     - **Pros:** Lightweight, easy to use, and sufficient for smaller datasets.  
+     - **Cons:** Limited scalability and less efficient with complex queries. Unfamiliar with this database.
+
+3. **Alternative for Admin Tools**
+   - **Option 1 (Chosen): Integrated Admin GUI**  
+     - **Pros:** Provides a unified interface for both students and administrators, ensuring consistency and ease of use. Enables administrators to perform tasks such as data updates and faculty scraping directly from a graphical interface.  
+     - **Cons:** Slightly increases the complexity of the system's design and implementation compared to CLI tools.  
+   - **Option 2: CLI-Based Tools**  
+     - **Pros:** Easier to implement, modular, and isolates administrative functionality from the main user interface.  
+     - **Cons:** Requires familiarity with command-line interfaces, which may be less user-friendly for administrators.
+
+
+---
+
+## **Plans for Refinement**
+
+As this is the initial submission, the design will be revisited and evolved based on:  
+1. **GUI improvements:** We will most likely start with a rough draft of the GUI and continue to add aesthetic changes further down the road.  
+
+
+---
