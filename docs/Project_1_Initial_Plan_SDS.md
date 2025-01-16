@@ -177,13 +177,13 @@ Our product is presented to the user in a graphical user interface that is compr
 ### System Structure
 Our product is split up into the following sections
 - Data
-    This component handles parsing input data in the form of JSON files (in administrator mode or the default file) into readable data and entering them into our MongoDB database. It also enables other components to easily retrieve data via the QueryBuilder class without having to directly query the database. 
+    - This component handles parsing input data in the form of JSON files (in administrator mode or the default file) into readable data and entering them into our MongoDB database. It also enables other components to easily retrieve data via the QueryBuilder class without having to directly query the database. 
 - Charts
-    The charts component implements graphs to display to the user after choosing data to show. It can use any of the previously described options to show data labelled by professor, department, level, or class. Calling this creates one graph and multiple instances can be called to have a side-by-side view.
+    - The charts component implements graphs to display to the user after choosing data to show. It can use any of the previously described options to show data labelled by professor, department, level, or class. Calling this creates one graph and multiple instances can be called to have a side-by-side view.
 - GUI
-    The GUI component implements the visual screen that the user will see. It contains all the buttons and other user input that can be used to make up the user's request or change the way the data is viewed. It calls the charts component to visualize the data after completing a search.
+    - The GUI component implements the visual screen that the user will see. It contains all the buttons and other user input that can be used to make up the user's request or change the way the data is viewed. It calls the data component to complete a search and the charts component to visualize the data after completing a search.
 - Tests
-    The test component contains tests for each of the other components individually as well as the systems they use to interface with each other.
+    - The test component contains tests for each of the other components individually as well as the systems they use to interface with each other.
 
 
 *Tim*
