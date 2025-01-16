@@ -157,10 +157,34 @@ The Project will be executed in five main phases from January 13th to February 5
  - Core and advanced feature phases must deliver working visualizations and user interface components. The final phase ensures all functionality meets performance requirements and is thoroughly tested.
 
 ## SDS
-*Myles*
-- A description of the product you intend to build. This should describe the externally visible behavior of your product as precisely as possible, but it should be concise and clear.
-- An overall design description. What are the major parts of your system, and how do they fit together?
-- System structure is clear.
+
+### Product Description
+Our product is presented to the user in a graphical user interface that is comprised of graphs as well as buttons that can change to admin view, search for a class/professor/department, or change the way the data is viewed.
+- The product is implemented in one screen, with the following user inputs:
+    - A header at the top containing input fields to select a department, class number, and/or year
+    - A button in the left corner to switch to an administrator to import new data to the program
+    - A search button in the right corner to search for the data requested by the user
+    - A selector drop down next to the displayed graphs
+        - The user can select what to use as the X axis of the graph, from professors or classes
+        - The user can select what to use as the Y axis of the graphs, from A percentage or D/F percentage
+    - A checkbox to include all faculty or regular faculty
+    - A checkbox to include class count
+    - A button to hold the current graph aside and preform a new search while it is still visible, enabling side by side viewing
+
+- The data can be viewed via the section in the center of the window displaying bar graph(s)
+    The graphs can measure A percentage, grade distribution, or amount of classes by professor, department, level, or class with an optional side-by-side view if selected by the user
+
+### System Structure
+Our product is split up into the following sections
+- Data
+    This component handles parsing input data in the form of JSON files (in administrator mode or the default file) into readable data and entering them into our MongoDB database. It also enables other components to easily retrieve data via the QueryBuilder class without having to directly query the database. 
+- Charts
+    The charts component implements graphs to display to the user after choosing data to show. It can use any of the previously described options to show data labelled by professor, department, level, or class. Calling this creates one graph and multiple instances can be called to have a side-by-side view.
+- GUI
+    The GUI component implements the visual screen that the user will see. It contains all the buttons and other user input that can be used to make up the user's request or change the way the data is viewed. It calls the charts component to visualize the data after completing a search.
+- Tests
+    The test component contains tests for each of the other components individually as well as the systems they use to interface with each other.
+
 
 *Tim*
 - Each major subsystem should be explained using a separate static model and dynamic model. All diagrams must be clear and understandable.
