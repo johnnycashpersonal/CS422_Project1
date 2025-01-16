@@ -157,10 +157,7 @@ The Project will be executed in five main phases from January 13th to February 5
  - Core and advanced feature phases must deliver working visualizations and user interface components. The final phase ensures all functionality meets performance requirements and is thoroughly tested.
 
 ## SDS
-*Myles*
-- A description of the product you intend to build. This should describe the externally visible behavior of your product as precisely as possible, but it should be concise and clear.
-- An overall design description. What are the major parts of your system, and how do they fit together?
-- System structure is clear.
+
 ### Product Description
 Our product is presented to the user in a graphical user interface that is comprised of graphs as well as buttons that can change to admin view, search for a class/professor/department, or change the way the data is viewed.
 - The product is implemented in one screen, with the following user inputs:
