@@ -62,7 +62,11 @@ class WebScraper:
 
     def get_faculty(self, soup):
         faculty_div = soup.find_all('p', {'class': 'facultylist'})
-        faculty_list = [faculty.text for faculty in faculty_div]
+        random_text = "The date in parentheses at the end of each entry is the first year on the University of Oregon faculty."
+        faculty_list = [] #that random text is marked as part of thre faculty list so I removed it
+        for faculty in faculty_div:
+            if faculty.text != random_text:
+                faculty_list.append(faculty.text)
         return faculty_list #finds the faculty names and strips useless info
 
     def strip_name(self, text):
@@ -94,7 +98,7 @@ def main():
             if dep_soup:
                 dep_name = dep_soup.find('title').text
                 dep_name = scraper.strip_name(dep_name)  # Clean up the department name
-                print(dep_name)
+                print(dep_name) 
                 faculty = scraper.get_faculty(dep_soup)
                 fac_list[dep_name] = [scraper.strip_fac_name(fac) for fac in faculty]
             else:
