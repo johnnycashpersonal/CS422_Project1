@@ -3,6 +3,7 @@ Data Import Module for EasyA Grade Analysis System
 """
 
 import json
+import re
 from typing import List, Dict, Any
 from pymongo import MongoClient
 
@@ -27,7 +28,7 @@ class DataImporter:
         
         try:
             with open(json_file_path, 'r', encoding='utf-8') as file:
-                # load json from file
+                # load json from file !!!weird split stuff is to trim the extra JS!!!
                 data = json.loads(file.read().split("= ")[1].split(";")[0])
         except (json.JSONDecodeError, FileNotFoundError) as e:
             raise ValueError(f"Error reading JSON file: {e}")
@@ -35,6 +36,7 @@ class DataImporter:
         for course_id, course_entries in data.items():
             try:
                 if not isinstance(course_entries, list) or not course_entries:
+                    print(course_entries)
                     print(f"Warning: Invalid entries for course {course_id}")
                     skipped_entries += 1
                     continue
@@ -48,6 +50,9 @@ class DataImporter:
                         print(f"Warning: Invalid term format for {course_id}: {term_desc}")
                         skipped_entries += 1
                         continue
+
+                    if len(term_parts) == 3:
+                        term_parts.pop(1)
                     
                     term, year = term_parts
                     academic_year = int(year)
@@ -75,21 +80,23 @@ class DataImporter:
                         continue
                     
                     # Infer department and course number
-                    department = ''.join(filter(str.isalpha, course_id))
+                    department = ''.join(re.search(r'^([A-z]*)(\d*)', course_id).group(1))
+                    course_number = ''
                     try:
-                        course_number = int(''.join(filter(str.isdigit, course_id)))
+                        course_number = (''.join(re.search(r'^([A-z]*)(\d*)', course_id).group(2)))
                     except ValueError:
                         print(f"Warning: Invalid course number for {course_id}")
                         skipped_entries += 1
                         continue
+                    new_course_number = department + course_number
                     
                     # Add course if not already processed
                     if course_id not in processed_courses:
-                        processed_courses.add(course_id)
+                        processed_courses.add(department + course_number)
                     
                     # Create grade distribution entry
                     grade_dist = {
-                        'course_id': course_id,
+                        'course_id': department + course_number,
                         'instructor_name': entry.get('instructor', '').strip(),
                         'year': academic_year,
                         'term': term,
