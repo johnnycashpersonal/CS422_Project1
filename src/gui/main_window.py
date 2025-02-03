@@ -5,81 +5,157 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from src.data.db_manager import DatabaseManager
 
-class EasyAApp:
+class DualWindowApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("EasyA - Grade Visualizer")
-        self.root.geometry("900x600")
-        self.root.configure(bg="#FFFFFF")  # Clean white background
+        self.root.title("EasyA - Grade Comparison")
+        self.root.geometry("1800x900")
+        self.root.configure(bg="#FFFFFF")
 
-        
-        self.db_manager = DatabaseManager()  
+        self.db_manager = DatabaseManager()
 
         # Configure global styles
         self.style = ttk.Style()
-        self.style.theme_use("clam")  # Modern look
+        self.style.theme_use("clam")
         self.style.configure("TButton", font=("Helvetica", 12), padding=6)
         self.style.map(
             "TButton",
             foreground=[("active", "#FFFFFF")],
-            background=[("active", "#4CAF50")],  # Green hover effect
+            background=[("active", "#4CAF50")],
         )
 
-        self.create_header()
-        self.create_main_area()
-        self.create_side_panel()
+        # Create main container as PanedWindow
+        self.main_container = ttk.PanedWindow(self.root, orient=tk.HORIZONTAL)
+        self.main_container.pack(fill=tk.BOTH, expand=True)
+
+        # Create left and right frames
+        self.left_frame = ttk.Frame(self.main_container)
+        self.right_frame = ttk.Frame(self.main_container)
+        
+        # Add frames to PanedWindow
+        self.main_container.add(self.left_frame, weight=1)
+        self.main_container.add(self.right_frame, weight=1)
+
+        # Create headers for both sides
+        self.create_header(self.left_frame, "left")
+        self.create_header(self.right_frame, "right")
+
+        # Create main areas for both sides
+        self.create_main_area(self.left_frame, "left")
+        self.create_main_area(self.right_frame, "right")
+
+        # Create shared footer
         self.create_footer()
 
-    def create_header(self):
-        header = tk.Frame(self.root, bg="#F5F5F5", height=60, pady=10)
-        header.pack(fill="x")
+        # Configure weight for proper resizing
+        self.left_frame.columnconfigure(0, weight=1)
+        self.right_frame.columnconfigure(0, weight=1)
+        self.root.columnconfigure(0, weight=1)
+        self.root.rowconfigure(0, weight=1)
 
-        tk.Label(header, text="Department:", bg="#F5F5F5", fg="#000000", font=("Helvetica", 12)).grid(row=0, column=0, padx=5)
-        self.department_entry = ttk.Entry(header, width=15)
-        self.department_entry.grid(row=0, column=1, padx=5)
+    def create_header(self, parent, side):
+        header = ttk.Frame(parent)
+        header.pack(fill="x", padx=5, pady=5)
 
-        tk.Label(header, text="Class Number:", bg="#F5F5F5", fg="#000000", font=("Helvetica", 12)).grid(row=0, column=2, padx=5)
-        self.class_entry = ttk.Entry(header, width=10)
-        self.class_entry.grid(row=0, column=3, padx=5)
-
-        tk.Label(header, text="Year:", bg="#F5F5F5", fg="#000000", font=("Helvetica", 12)).grid(row=0, column=4, padx=5)
-        self.year_entry = ttk.Entry(header, width=8)
-        self.year_entry.grid(row=0, column=5, padx=5)
-
-        ttk.Button(header, text="Show All", command=self.show_all_courses).grid(row=0, column=6, padx=15)
-        ttk.Button(header, text="Search", command=self.handle_search).grid(row=0, column=7, padx=15)
-        ttk.Button(header, text="Admin Mode", command=self.toggle_admin_mode).grid(row=0, column=8, padx=15)
-
-
-    def create_main_area(self):
-        self.graph_area = tk.Frame(self.root, bg="#FFFFFF", relief="ridge", bd=2)
-        self.graph_area.pack(fill="both", expand=True, padx=20, pady=20)
-
-        # Add a table for raw data
-        self.tree = ttk.Treeview(self.graph_area, columns=("Professor", "Course", "%As", "%DFs", "Count"), show="headings")
+        # Store entry widgets in dictionaries for easy access
+        if side == "left":
+            self.left_entries = {}
+        else:
+            self.right_entries = {}
         
-        # Define headings
-        self.tree.heading("Professor", text="Professor")
-        self.tree.heading("Course", text="Course")
-        self.tree.heading("%As", text="% As")
-        self.tree.heading("%DFs", text="% D/Fs")
-        self.tree.heading("Count", text="Class Count")
-        
-        # Add scrollbar
-        scrollbar = ttk.Scrollbar(self.graph_area, orient="vertical", command=self.tree.yview)
-        self.tree.configure(yscrollcommand=scrollbar.set)
-        
-        # Pack the table and scrollbar
-        self.tree.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
+        entries = self.left_entries if side == "left" else self.right_entries
 
-        self.graph_canvas = None
+        # Create a sub-frame for better organization
+        fields_frame = ttk.Frame(header)
+        fields_frame.pack(fill="x")
 
-    def show_all_courses(self):
-        """Display all unique courses in the database"""
+        # Department field
+        dept_frame = ttk.Frame(fields_frame)
+        dept_frame.pack(side="left", padx=5)
+        ttk.Label(dept_frame, text="Department:").pack(side="left")
+        entries['department'] = ttk.Entry(dept_frame, width=15)
+        entries['department'].pack(side="left", padx=2)
+
+        # Class Number field
+        class_frame = ttk.Frame(fields_frame)
+        class_frame.pack(side="left", padx=5)
+        ttk.Label(class_frame, text="Class Number:").pack(side="left")
+        entries['class'] = ttk.Entry(class_frame, width=10)
+        entries['class'].pack(side="left", padx=2)
+
+        # Year field
+        year_frame = ttk.Frame(fields_frame)
+        year_frame.pack(side="left", padx=5)
+        ttk.Label(year_frame, text="Year:").pack(side="left")
+        entries['year'] = ttk.Entry(year_frame, width=8)
+        entries['year'].pack(side="left", padx=2)
+
+        # Buttons
+        buttons_frame = ttk.Frame(fields_frame)
+        buttons_frame.pack(side="left", padx=5)
+        ttk.Button(buttons_frame, text="Show All", 
+                  command=lambda s=side: self.show_all_courses(s)).pack(side="left", padx=2)
+        ttk.Button(buttons_frame, text="Search", 
+                  command=lambda s=side: self.handle_search(s)).pack(side="left", padx=2)
+
+    def create_main_area(self, parent, side):
+        # Create frame for the main area that will expand
+        main_frame = ttk.Frame(parent)
+        main_frame.pack(fill="both", expand=True, padx=5, pady=5)
+
+        # Configure the main frame to expand properly
+        main_frame.columnconfigure(0, weight=1)
+        main_frame.rowconfigure(0, weight=1)
+
+        # Create and configure the treeview with scrollbar
+        tree = ttk.Treeview(main_frame, columns=("Professor", "Course", "%As", "%DFs", "Count"), 
+                           show="headings", selectmode="extended")
+        
+        # Create scrollbars
+        vsb = ttk.Scrollbar(main_frame, orient="vertical", command=tree.yview)
+        hsb = ttk.Scrollbar(main_frame, orient="horizontal", command=tree.xview)
+        tree.configure(yscrollcommand=vsb.set, xscrollcommand=hsb.set)
+
+        # Grid layout for tree and scrollbars
+        tree.grid(column=0, row=0, sticky="nsew")
+        vsb.grid(column=1, row=0, sticky="ns")
+        hsb.grid(column=0, row=1, sticky="ew")
+
+        # Configure column headings
+        tree.heading("Professor", text="Professor")
+        tree.heading("Course", text="Course")
+        tree.heading("%As", text="% As")
+        tree.heading("%DFs", text="% D/Fs")
+        tree.heading("Count", text="Class Count")
+
+        # Configure column widths
+        for col in ("Professor", "Course", "%As", "%DFs", "Count"):
+            tree.column(col, width=100, minwidth=50)
+
+        # Store the tree reference
+        if side == "left":
+            self.left_tree = tree
+        else:
+            self.right_tree = tree
+
+    def create_footer(self):
+        footer = ttk.Frame(self.root)
+        footer.pack(fill="x", side="bottom", padx=5, pady=5)
+
+        self.status_label = ttk.Label(footer, text="Status: Ready")
+        self.status_label.pack(side="left", padx=5)
+
+        ttk.Button(footer, text="Admin Mode", 
+                  command=self.toggle_admin_mode).pack(side="right", padx=5)
+
+    # [Previous methods for show_all_courses, handle_search, and toggle_admin_mode remain the same]
+    
+    def show_all_courses(self, side):
+        tree = self.left_tree if side == "left" else self.right_tree
+        
         # Clear existing entries
-        for item in self.tree.get_children():
-            self.tree.delete(item)
+        for item in tree.get_children():
+            tree.delete(item)
             
         try:
             pipeline = [
@@ -90,49 +166,43 @@ class EasyAApp:
                     "instructor_count": {"$addToSet": "$instructor_name"},
                     "total_classes": {"$sum": 1}
                 }},
-                {"$sort": {"_id": 1}}  # Sort by course_id
+                {"$sort": {"_id": 1}}
             ]
             
             results = list(self.db_manager.grade_distributions.aggregate(pipeline))
             
             for result in results:
-                self.tree.insert("", "end", values=(
+                tree.insert("", "end", values=(
                     f"{len(result['instructor_count'])} instructors",
-                    result["_id"],  # Course ID
-                    f"{result['avg_percent_a']:.1f}",  # Average As percentage
-                    f"{result['avg_percent_df']:.1f}",  # Average D/F percentage
-                    result["total_classes"]  # Total classes
+                    result["_id"],
+                    f"{result['avg_percent_a']:.1f}",
+                    f"{result['avg_percent_df']:.1f}",
+                    result["total_classes"]
                 ))
             
             self.status_label.config(text=f"Status: Found {len(results)} courses")
                 
         except Exception as e:
-            print(f"Error details: {str(e)}")  # Debug print
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
             self.status_label.config(text="Status: Error fetching data")
 
-    def handle_search(self):
-        """Handle search button click and display raw data"""
-        department = self.department_entry.get().strip().upper()
-        class_num = self.class_entry.get().strip()
+    def handle_search(self, side):
+        entries = self.left_entries if side == "left" else self.right_entries
+        tree = self.left_tree if side == "left" else self.right_tree
+        
+        department = entries['department'].get().strip().upper()
+        class_num = entries['class'].get().strip()
         
         # Clear existing entries
-        for item in self.tree.get_children():
-            self.tree.delete(item)
+        for item in tree.get_children():
+            tree.delete(item)
             
         try:
-            # Debug print
-            print(f"Searching for department: {department}, class: {class_num}")
-            
             if not department:
                 messagebox.showerror("Error", "Please enter a department")
                 return
                 
             course_id = department + class_num if class_num else None
-            
-            # Debug print
-            if course_id:
-                print(f"Searching for course_id: {course_id}")
             
             # Get data based on search criteria
             results = []
@@ -140,78 +210,27 @@ class EasyAApp:
                 results = self.db_manager.get_course_stats(course_id)
             else:
                 results = self.db_manager.get_department_stats(department)
-            
-            # Debug print
-            print(f"Found {len(results)} results")
-            print(f"First result: {results[0] if results else 'No results'}")
                 
             # Insert data into table
             for result in results:
-                self.tree.insert("", "end", values=(
-                    result["_id"],  # Professor name
-                    course_id if course_id else department,  # Course
-                    f"{result['avg_percent_a']:.1f}",  # As percentage
-                    f"{result['avg_percent_df']:.1f}",  # D/F percentage
-                    result["class_count"]  # Number of classes
+                tree.insert("", "end", values=(
+                    result["_id"],
+                    course_id if course_id else department,
+                    f"{result['avg_percent_a']:.1f}",
+                    f"{result['avg_percent_df']:.1f}",
+                    result["class_count"]
                 ))
                 
             self.status_label.config(text=f"Status: Found {len(results)} results")
                 
         except Exception as e:
-            print(f"Error details: {str(e)}")  # Debug print
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
             self.status_label.config(text="Status: Error fetching data")
-
-    def create_side_panel(self):
-        side_panel = tk.Frame(self.root, bg="#F5F5F5", width=250, relief="ridge", bd=2)
-        side_panel.pack(side="right", fill="y")
-
-        tk.Label(side_panel, text="Filters", bg="#F5F5F5", font=("Helvetica", 14, "bold")).pack(pady=15)
-
-        ttk.Label(side_panel, text="X-Axis:", background="#F5F5F5").pack(pady=5)
-        self.x_axis_var = tk.StringVar()
-        ttk.Combobox(side_panel, textvariable=self.x_axis_var, values=["Professors", "Classes"], state="readonly").pack(pady=5)
-
-        ttk.Label(side_panel, text="Y-Axis:", background="#F5F5F5").pack(pady=5)
-        self.y_axis_var = tk.StringVar()
-        ttk.Combobox(side_panel, textvariable=self.y_axis_var, values=["% As", "% Ds/Fs"], state="readonly").pack(pady=5)
-
-        ttk.Checkbutton(side_panel, text="Include All Faculty").pack(pady=10)
-        ttk.Checkbutton(side_panel, text="Include Class Count").pack(pady=10)
-
-        ttk.Button(side_panel, text="Show Test Graph", command=self.display_test_graph).pack(pady=15)
-
-    def create_footer(self):
-        footer = tk.Frame(self.root, bg="#F5F5F5", height=40)
-        footer.pack(fill="x")
-
-        self.status_label = tk.Label(footer, text="Status: Ready", bg="#F5F5F5", font=("Helvetica", 10))
-        self.status_label.pack(side="left", padx=10)
 
     def toggle_admin_mode(self):
         messagebox.showinfo("Admin Mode", "Admin mode toggled.")
 
-    def display_test_graph(self):
-        data = {"Prof. A": 80, "Prof. B": 90, "Prof. C": 70, "Prof. D": 85}
-
-        if self.graph_canvas:
-            self.graph_canvas.get_tk_widget().destroy()
-
-        fig = Figure(figsize=(5, 4), dpi=100)
-        ax = fig.add_subplot(111)
-        ax.bar(data.keys(), data.values(), color="#4CAF50")
-        ax.set_title("Test Graph - Grade Distribution", fontsize=14)
-        ax.set_ylabel("% Grades")
-        ax.set_xlabel("Professors")
-
-        self.graph_canvas = FigureCanvasTkAgg(fig, master=self.graph_area)
-        self.graph_canvas.draw()
-        self.graph_canvas.get_tk_widget().pack(fill="both", expand=True)
-
-        self.status_label.config(text="Status: Test graph displayed.")
-
 if __name__ == "__main__":
     root = tk.Tk()
-    app = EasyAApp(root)
+    app = DualWindowApp(root)
     root.mainloop()
-
