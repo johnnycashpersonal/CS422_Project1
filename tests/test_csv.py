@@ -1,6 +1,7 @@
+import sys
+# sys.path.insert(0,'../')
 from src.data.db_manager import DatabaseManager
 from admin.import_data import DataImporter
-import sys
 from datetime import datetime
 from collections import defaultdict
 
@@ -37,9 +38,9 @@ def test_database_functionality():
         db.grade_distributions.delete_many({})
 
         # Import project data
-        print("Importing data from CSV...")
+        print("Importing data from JSON...")
         try:
-            importer.import_grade_data("src/data/data.csv")
+            importer.import_grade_data("src/data/gradedata.js")
         except Exception as e:
             print(f"Error during data import: {str(e)}")
             return
