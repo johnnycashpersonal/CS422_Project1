@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from src.data.db_manager import DatabaseManager
 
 class EasyAApp:
     def __init__(self, root):
@@ -10,6 +11,9 @@ class EasyAApp:
         self.root.title("EasyA - Grade Visualizer")
         self.root.geometry("900x600")
         self.root.configure(bg="#FFFFFF")  # Clean white background
+
+        
+        self.db_manager = DatabaseManager()  
 
         # Configure global styles
         self.style = ttk.Style()
@@ -50,7 +54,76 @@ class EasyAApp:
         self.graph_area = tk.Frame(self.root, bg="#FFFFFF", relief="ridge", bd=2)
         self.graph_area.pack(fill="both", expand=True, padx=20, pady=20)
 
+        # Add a table for raw data
+        self.tree = ttk.Treeview(self.graph_area, columns=("Professor", "Course", "%As", "%DFs", "Count"), show="headings")
+        
+        # Define headings
+        self.tree.heading("Professor", text="Professor")
+        self.tree.heading("Course", text="Course")
+        self.tree.heading("%As", text="% As")
+        self.tree.heading("%DFs", text="% D/Fs")
+        self.tree.heading("Count", text="Class Count")
+        
+        # Add scrollbar
+        scrollbar = ttk.Scrollbar(self.graph_area, orient="vertical", command=self.tree.yview)
+        self.tree.configure(yscrollcommand=scrollbar.set)
+        
+        # Pack the table and scrollbar
+        self.tree.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
         self.graph_canvas = None
+
+    def handle_search(self):
+        """Handle search button click and display raw data"""
+        department = self.department_entry.get().strip().upper()
+        class_num = self.class_entry.get().strip()
+        
+        # Clear existing entries
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+            
+        try:
+            # Debug print
+            print(f"Searching for department: {department}, class: {class_num}")
+            
+            if not department:
+                messagebox.showerror("Error", "Please enter a department")
+                return
+                
+            course_id = department + class_num if class_num else None
+            
+            # Debug print
+            if course_id:
+                print(f"Searching for course_id: {course_id}")
+            
+            # Get data based on search criteria
+            results = []
+            if course_id:
+                results = self.db_manager.get_course_stats(course_id)
+            else:
+                results = self.db_manager.get_department_stats(department)
+            
+            # Debug print
+            print(f"Found {len(results)} results")
+            print(f"First result: {results[0] if results else 'No results'}")
+                
+            # Insert data into table
+            for result in results:
+                self.tree.insert("", "end", values=(
+                    result["_id"],  # Professor name
+                    course_id if course_id else department,  # Course
+                    f"{result['avg_percent_a']:.1f}",  # As percentage
+                    f"{result['avg_percent_df']:.1f}",  # D/F percentage
+                    result["class_count"]  # Number of classes
+                ))
+                
+            self.status_label.config(text=f"Status: Found {len(results)} results")
+                
+        except Exception as e:
+            print(f"Error details: {str(e)}")  # Debug print
+            messagebox.showerror("Error", f"An error occurred: {str(e)}")
+            self.status_label.config(text="Status: Error fetching data")
 
     def create_side_panel(self):
         side_panel = tk.Frame(self.root, bg="#F5F5F5", width=250, relief="ridge", bd=2)
@@ -77,9 +150,6 @@ class EasyAApp:
 
         self.status_label = tk.Label(footer, text="Status: Ready", bg="#F5F5F5", font=("Helvetica", 10))
         self.status_label.pack(side="left", padx=10)
-
-    def handle_search(self):
-        messagebox.showinfo("Search", "Search functionality will be implemented.")
 
     def toggle_admin_mode(self):
         messagebox.showinfo("Admin Mode", "Admin mode toggled.")
