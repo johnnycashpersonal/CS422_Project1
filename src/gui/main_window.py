@@ -5,33 +5,31 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from src.data.db_manager import DatabaseManager
 
+import tkinter as tk
+from tkinter import ttk
+from tkinter import messagebox
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from src.data.db_manager import DatabaseManager
+
 class DualWindowApp:
     def __init__(self, root):
         self.root = root
         self.root.title("EasyA - Grade Comparison")
-        self.root.geometry("1800x900")
+        self.root.geometry("1200x800")
         self.root.configure(bg="#FFFFFF")
 
-        # Add department options
+        # Initialize graph display settings
+        self.show_class_count = True
+        self.show_as = True  # True for As, False for DFs
+
         self.departments = [
-            "BI",    # Biology
-            "CH",    # Chemistry
-            "CIS",   # Computer and Info Science
-            "HPHY",  # Human Physiology
-            "MATH",  # Mathematics
-            "PHYS",  # Physics
-            "PSY"    # Psychology
+            "BI", "CH", "CIS", "HPHY", "MATH", "PHYS", "PSY"
         ]
         
-        # Add course levels with Show All option
         self.course_levels = [
-            "Show All",
-            "100-level",
-            "200-level",
-            "300-level",
-            "400-level",
-            "500-level",
-            "600-level"
+            "Show All", "100-level", "200-level", "300-level",
+            "400-level", "500-level", "600-level"
         ]
 
         self.db_manager = DatabaseManager()
@@ -40,136 +38,152 @@ class DualWindowApp:
         self.style = ttk.Style()
         self.style.theme_use("clam")
         self.style.configure("TButton", font=("Helvetica", 12), padding=6)
+        # New style configurations for improved visibility of check boxes
+        self.style.configure("TRadiobutton", font=("Helvetica", 14, "bold"), foreground="black")
+        self.style.configure("TCheckbutton", font=("Helvetica", 14, "bold"), foreground="black")
         self.style.map(
             "TButton",
             foreground=[("active", "#FFFFFF")],
             background=[("active", "#4CAF50")],
         )
 
-        # Create main container as PanedWindow
-        self.main_container = ttk.PanedWindow(self.root, orient=tk.HORIZONTAL)
+        # Create main container
+        self.main_container = ttk.Frame(self.root)
         self.main_container.pack(fill=tk.BOTH, expand=True)
 
-        # Create left and right frames
-        self.left_frame = ttk.Frame(self.main_container)
-        self.right_frame = ttk.Frame(self.main_container)
+        # Create control panel for graph options (top)
+        self.control_panel = ttk.Frame(self.main_container)
+        self.control_panel.pack(fill=tk.X, padx=10, pady=5)
+        self.create_graph_controls()
+
+        # Create graph section (middle)
+        self.graph_section = ttk.Frame(self.main_container)
+        self.graph_section.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
+        # Create left and right graph frames
+        self.left_graph_frame = ttk.LabelFrame(self.graph_section, text="Left Graph")
+        self.right_graph_frame = ttk.LabelFrame(self.graph_section, text="Right Graph")
         
-        # Add frames to PanedWindow
-        self.main_container.add(self.left_frame, weight=1)
-        self.main_container.add(self.right_frame, weight=1)
+        self.left_graph_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5, pady=5)
+        self.right_graph_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-        # Create headers for both sides
-        self.create_header(self.left_frame, "left")
-        self.create_header(self.right_frame, "right")
+        # Initialize graphs
+        self.create_graph(self.left_graph_frame, "left")
+        self.create_graph(self.right_graph_frame, "right")
 
-        # Create main areas for both sides
-        self.create_main_area(self.left_frame, "left")
-        self.create_main_area(self.right_frame, "right")
+        # Store the current search parameters for graph titles
+        self.left_search_params = {}
+        self.right_search_params = {}
 
-        # Create shared footer
+        # Create search section (bottom)
+        self.search_section = ttk.Frame(self.main_container)
+        self.search_section.pack(fill=tk.X, padx=10, pady=5)
+        
+        # Create search parameters
+        self.create_search_area(self.search_section)
+
+        # Create footer
         self.create_footer()
 
-        # Configure weight for proper resizing
-        self.left_frame.columnconfigure(0, weight=1)
-        self.right_frame.columnconfigure(0, weight=1)
-        self.root.columnconfigure(0, weight=1)
-        self.root.rowconfigure(0, weight=1)
+    def create_graph_controls(self):
+        """Create controls for graph display options"""
+        # Grade type toggle
+        self.grade_var = tk.StringVar(value="% As")
+        ttk.Radiobutton(
+            self.control_panel,
+            text="Show % As",
+            variable=self.grade_var,
+            value="% As",
+            command=self.update_all_graphs
+        ).pack(side=tk.LEFT, padx=10, pady=5)
+        ttk.Radiobutton(
+            self.control_panel,
+            text="Show % Ds/Fs",
+            variable=self.grade_var,
+            value="% Ds/Fs",
+            command=self.update_all_graphs
+        ).pack(side=tk.LEFT, padx=10, pady=5)
 
-    def create_header(self, parent, side):
-        header = ttk.Frame(parent)
-        header.pack(fill="x", padx=5, pady=5)
+        # Class count toggle
+        self.count_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(
+            self.control_panel,
+            text="Show Class Count",
+            variable=self.count_var,
+            command=self.update_all_graphs
+        ).pack(side=tk.LEFT, padx=20, pady=5)
+        
 
-        # Store entry widgets in dictionaries for easy access
+    def update_all_graphs(self):
+        """Update both graphs with current display settings"""
+        self.show_as = self.grade_var.get() == "% As"
+        self.show_class_count = self.count_var.get()
+        
+        # Refresh both graphs with current data
+        if hasattr(self, 'left_current_results'):
+            self.update_side_graph('left', self.left_current_results)
+        if hasattr(self, 'right_current_results'):
+            self.update_side_graph('right', self.right_current_results)
+
+    def create_graph(self, parent, side):
+        """Create a matplotlib graph in the given frame"""
+        fig = Figure(figsize=(6, 4), dpi=100)
+        canvas = FigureCanvasTkAgg(fig, master=parent)
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        
+        if side == "left":
+            self.left_fig = fig
+            self.left_canvas = canvas
+        else:
+            self.right_fig = fig
+            self.right_canvas = canvas
+
+    def create_search_area(self, parent):
+        """Create search parameters area"""
+        left_search = ttk.LabelFrame(parent, text="Left Side Search")
+        right_search = ttk.LabelFrame(parent, text="Right Side Search")
+        
+        left_search.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5, pady=5)
+        right_search.pack(side=tk.RIGHT, fill=tk.X, expand=True, padx=5, pady=5)
+        
+        self.create_search_fields(left_search, "left")
+        self.create_search_fields(right_search, "right")
+
+    def create_search_fields(self, parent, side):
+        """Create search fields for one side"""
         if side == "left":
             self.left_entries = {}
+            entries = self.left_entries
         else:
             self.right_entries = {}
+            entries = self.right_entries
+
+        ttk.Label(parent, text="Department:").grid(row=0, column=0, padx=5, pady=5)
+        entries['department'] = ttk.Combobox(parent, width=15, values=self.departments, state="readonly")
+        entries['department'].grid(row=0, column=1, padx=5, pady=5)
+
+        ttk.Label(parent, text="Course Level:").grid(row=0, column=2, padx=5, pady=5)
+        entries['level'] = ttk.Combobox(parent, width=15, values=self.course_levels, state="readonly")
+        entries['level'].grid(row=0, column=3, padx=5, pady=5)
+
+        ttk.Label(parent, text="Class Number:").grid(row=1, column=0, padx=5, pady=5)
+        entries['class'] = ttk.Entry(parent, width=10)
+        entries['class'].grid(row=1, column=1, padx=5, pady=5)
+
+        ttk.Label(parent, text="Year:").grid(row=1, column=2, padx=5, pady=5)
+        entries['year'] = ttk.Entry(parent, width=8)
+        entries['year'].grid(row=1, column=3, padx=5, pady=5)
+
+        button_frame = ttk.Frame(parent)
+        button_frame.grid(row=2, column=0, columnspan=4, pady=10)
         
-        entries = self.left_entries if side == "left" else self.right_entries
-
-        # Create a sub-frame for better organization
-        fields_frame = ttk.Frame(header)
-        fields_frame.pack(fill="x")
-
-        # Department field (dropdown)
-        dept_frame = ttk.Frame(fields_frame)
-        dept_frame.pack(side="left", padx=5)
-        ttk.Label(dept_frame, text="Department:").pack(side="left")
-        entries['department'] = ttk.Combobox(dept_frame, width=15, values=self.departments, state="readonly")
-        entries['department'].pack(side="left", padx=2)
-
-        # Course Level field (dropdown)
-        level_frame = ttk.Frame(fields_frame)
-        level_frame.pack(side="left", padx=5)
-        ttk.Label(level_frame, text="Course Level:").pack(side="left")
-        entries['level'] = ttk.Combobox(level_frame, width=15, values=self.course_levels, state="readonly")
-        entries['level'].pack(side="left", padx=2)
-
-        # Class Number field
-        class_frame = ttk.Frame(fields_frame)
-        class_frame.pack(side="left", padx=5)
-        ttk.Label(class_frame, text="Class Number:").pack(side="left")
-        entries['class'] = ttk.Entry(class_frame, width=10)
-        entries['class'].pack(side="left", padx=2)
-
-        # Year field
-        year_frame = ttk.Frame(fields_frame)
-        year_frame.pack(side="left", padx=5)
-        ttk.Label(year_frame, text="Year:").pack(side="left")
-        entries['year'] = ttk.Entry(year_frame, width=8)
-        entries['year'].pack(side="left", padx=2)
-
-        # Buttons frame
-        buttons_frame = ttk.Frame(fields_frame)
-        buttons_frame.pack(side="left", padx=5)
-        
-        # Search buttons
-        ttk.Button(buttons_frame, text="Search", 
-                  command=lambda s=side: self.handle_search(s)).pack(side="left", padx=2)
-        ttk.Button(buttons_frame, text="Search by Level", 
-                  command=lambda s=side: self.handle_level_search(s)).pack(side="left", padx=2)
-
-    def create_main_area(self, parent, side):
-        # Create frame for the main area that will expand
-        main_frame = ttk.Frame(parent)
-        main_frame.pack(fill="both", expand=True, padx=5, pady=5)
-
-        # Configure the main frame to expand properly
-        main_frame.columnconfigure(0, weight=1)
-        main_frame.rowconfigure(0, weight=1)
-
-        # Create and configure the treeview with scrollbar
-        tree = ttk.Treeview(main_frame, columns=("Professor", "Course", "%As", "%DFs", "Count"), 
-                           show="headings", selectmode="extended")
-        
-        # Create scrollbars
-        vsb = ttk.Scrollbar(main_frame, orient="vertical", command=tree.yview)
-        hsb = ttk.Scrollbar(main_frame, orient="horizontal", command=tree.xview)
-        tree.configure(yscrollcommand=vsb.set, xscrollcommand=hsb.set)
-
-        # Grid layout for tree and scrollbars
-        tree.grid(column=0, row=0, sticky="nsew")
-        vsb.grid(column=1, row=0, sticky="ns")
-        hsb.grid(column=0, row=1, sticky="ew")
-
-        # Configure column headings
-        tree.heading("Professor", text="Professor")
-        tree.heading("Course", text="Course")
-        tree.heading("%As", text="% As")
-        tree.heading("%DFs", text="% D/Fs")
-        tree.heading("Count", text="Class Count")
-
-        # Configure column widths
-        for col in ("Professor", "Course", "%As", "%DFs", "Count"):
-            tree.column(col, width=100, minwidth=50)
-
-        # Store the tree reference
-        if side == "left":
-            self.left_tree = tree
-        else:
-            self.right_tree = tree
+        ttk.Button(button_frame, text="Search", 
+                  command=lambda s=side: self.handle_search(s)).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="Search by Level", 
+                  command=lambda s=side: self.handle_level_search(s)).pack(side=tk.LEFT, padx=5)
 
     def create_footer(self):
+        """Create footer with status and admin button"""
         footer = ttk.Frame(self.root)
         footer.pack(fill="x", side="bottom", padx=5, pady=5)
 
@@ -179,17 +193,35 @@ class DualWindowApp:
         ttk.Button(footer, text="Admin Mode", 
                   command=self.toggle_admin_mode).pack(side="right", padx=5)
 
-    def handle_search(self, side):
+    def get_graph_title(self, side):
+        """Generate graph title based on search parameters"""
         entries = self.left_entries if side == "left" else self.right_entries
-        tree = self.left_tree if side == "left" else self.right_tree
+        params = {}
+        
+        dept = entries['department'].get()
+        level = entries['level'].get()
+        class_num = entries['class'].get()
+        year = entries['year'].get()
+        
+        title_parts = []
+        if dept:
+            title_parts.append(f"Dept: {dept}")
+        if class_num:
+            title_parts.append(f"Course: {class_num}")
+        if level and level != "Show All":
+            title_parts.append(f"Level: {level}")
+        if year:
+            title_parts.append(f"Year: {year}")
+            
+        return " | ".join(title_parts) if title_parts else "No Search Parameters"
+
+    def handle_search(self, side):
+        """Handle search by course number"""
+        entries = self.left_entries if side == "left" else self.right_entries
         
         department = entries['department'].get().strip()
         class_num = entries['class'].get().strip()
         
-        # Clear existing entries
-        for item in tree.get_children():
-            tree.delete(item)
-            
         try:
             if not department:
                 messagebox.showerror("Error", "Please select a department")
@@ -197,23 +229,19 @@ class DualWindowApp:
                 
             course_id = department + class_num if class_num else None
             
-            # Get data based on search criteria
             results = []
             if course_id:
                 results = self.db_manager.get_course_stats(course_id)
             else:
                 results = self.db_manager.get_department_stats(department)
+            
+            # Store current results for graph updates
+            if side == "left":
+                self.left_current_results = results
+            else:
+                self.right_current_results = results
                 
-            # Insert data into table
-            for result in results:
-                tree.insert("", "end", values=(
-                    result["_id"],
-                    course_id if course_id else department,
-                    f"{result['avg_percent_a']:.1f}",
-                    f"{result['avg_percent_df']:.1f}",
-                    result["class_count"]
-                ))
-                
+            self.update_side_graph(side, results)
             self.status_label.config(text=f"Status: Found {len(results)} results")
                 
         except Exception as e:
@@ -221,40 +249,24 @@ class DualWindowApp:
             self.status_label.config(text="Status: Error fetching data")
 
     def handle_level_search(self, side):
-        entries = self.left_entries if side == "left" else self.right_entries
-        tree = self.left_tree if side == "left" else self.right_tree
+        """Handle search by course level"""
+        entries = self.left_entries if side == "right" else self.right_entries
         
         department = entries['department'].get().strip()
         level_text = entries['level'].get().strip()
         
-        if not department:
-            messagebox.showerror("Error", "Please select a department")
+        if not department or not level_text:
+            messagebox.showerror("Error", "Please select both department and course level")
             return
-            
-        if not level_text:
-            messagebox.showerror("Error", "Please select a course level")
-            return
-            
-        # Clear existing entries
-        for item in tree.get_children():
-            tree.delete(item)
             
         try:
-            # Modify pipeline based on whether "Show All" is selected
-            if level_text == "Show All":
-                # Show all courses for the department
-                regex_pattern = f"^{department}"
-            else:
-                # Extract the level number and filter by it
+            regex_pattern = f"^{department}"
+            if level_text != "Show All":
                 level_num = level_text[0]
                 regex_pattern = f"^{department}{level_num}"
                 
             pipeline = [
-                {"$match": {
-                    "course_id": {
-                        "$regex": regex_pattern
-                    }
-                }},
+                {"$match": {"course_id": {"$regex": regex_pattern}}},
                 {"$group": {
                     "_id": {
                         "instructor": "$instructor_name",
@@ -269,22 +281,55 @@ class DualWindowApp:
             
             results = list(self.db_manager.grade_distributions.aggregate(pipeline))
             
-            for result in results:
-                tree.insert("", "end", values=(
-                    result["_id"]["instructor"],
-                    result["_id"]["course"],
-                    f"{result['avg_percent_a']:.1f}",
-                    f"{result['avg_percent_df']:.1f}",
-                    result["class_count"]
-                ))
-            
+            # Store current results for graph updates
+            if side == "left":
+                self.left_current_results = results
+            else:
+                self.right_current_results = results
+                
+            self.update_side_graph(side, results)
             self.status_label.config(text=f"Status: Found {len(results)} results")
                 
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
             self.status_label.config(text="Status: Error fetching data")
 
+    def update_side_graph(self, side, results):
+        """Update graph for one side with the search results"""
+        fig = self.left_fig if side == "left" else self.right_fig
+        canvas = self.left_canvas if side == "left" else self.right_canvas
+        
+        fig.clear()
+        ax = fig.add_subplot(111)
+        
+        # Extract data for plotting
+        courses = [f"{r['_id']['course']}\n{r['_id']['instructor']}" for r in results]
+        percentages = [r['avg_percent_a' if self.show_as else 'avg_percent_df'] for r in results]
+        counts = [r['class_count'] for r in results]
+        
+        # Create bars
+        bars = ax.bar(range(len(courses)), percentages, 
+                     color='blue' if side == "left" else 'red', alpha=0.7)
+        
+        # Add class count labels if enabled
+        if self.show_class_count:
+            for bar, count in zip(bars, counts):
+                height = bar.get_height()
+                ax.text(bar.get_x() + bar.get_width()/2., height,
+                       f'n={count}',
+                       ha='center', va='bottom')
+        
+        # Customize the graph
+        ax.set_ylabel("% As" if self.show_as else "% Ds/Fs")
+        ax.set_title(self.get_graph_title(side))
+        ax.set_xticks(range(len(courses)))
+        ax.set_xticklabels(courses, rotation=45, ha='right')
+        
+        fig.tight_layout()
+        canvas.draw()
+
     def toggle_admin_mode(self):
+        """Toggle admin mode"""
         messagebox.showinfo("Admin Mode", "Admin mode toggled.")
 
 if __name__ == "__main__":
