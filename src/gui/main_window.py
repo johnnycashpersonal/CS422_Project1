@@ -23,8 +23,9 @@ class DualWindowApp:
             "PSY"    # Psychology
         ]
         
-        # Add course levels
+        # Add course levels with Show All option
         self.course_levels = [
+            "Show All",
             "100-level",
             "200-level",
             "300-level",
@@ -234,19 +235,24 @@ class DualWindowApp:
             messagebox.showerror("Error", "Please select a course level")
             return
             
-        # Extract the level number from the selection (e.g., "300-level" -> "3")
-        level_num = level_text[0]
-        
         # Clear existing entries
         for item in tree.get_children():
             tree.delete(item)
             
         try:
-            # Query for courses with matching department and level
+            # Modify pipeline based on whether "Show All" is selected
+            if level_text == "Show All":
+                # Show all courses for the department
+                regex_pattern = f"^{department}"
+            else:
+                # Extract the level number and filter by it
+                level_num = level_text[0]
+                regex_pattern = f"^{department}{level_num}"
+                
             pipeline = [
                 {"$match": {
                     "course_id": {
-                        "$regex": f"^{department}{level_num}"
+                        "$regex": regex_pattern
                     }
                 }},
                 {"$group": {
@@ -258,7 +264,7 @@ class DualWindowApp:
                     "avg_percent_df": {"$avg": "$percent_df"},
                     "class_count": {"$sum": 1}
                 }},
-                {"$sort": {"_id.instructor": 1}}
+                {"$sort": {"_id.course": 1, "_id.instructor": 1}}
             ]
             
             results = list(self.db_manager.grade_distributions.aggregate(pipeline))
