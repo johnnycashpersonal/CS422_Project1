@@ -128,5 +128,10 @@ class DataImporter:
                   'level': (int(''.join(filter(str.isdigit, id))) // 100) * 100} 
                  for id in processed_courses]
             )
+        else:
+            return False
         if processed_grades:
             self.db.grade_distributions.insert_many(processed_grades)
+        else:
+            return False
+        return True
