@@ -1,3 +1,4 @@
 # Required packages
 pymongo
 matplotlib
+beautifulsoup4
