@@ -1,6 +1,6 @@
 African Studies:
 Yvonne A. Braun
-André Djiffack
+AndrÃ© Djiffack
 Jenifer P. Craig
 John Fenn
 Stephen R. Frost
@@ -25,7 +25,7 @@ Lamia Karim
 Gyoung-Ah Lee
 Sandra L. Morgen
 Madonna L. Moss
-Theresa D. O’Nell
+Theresa D. Oâ€™Nell
 Philip W. Scher
 Carol T. Silverman
 J. Josh Snodgrass
@@ -48,7 +48,7 @@ Pamela E. Endzweig
 Dennis L. Jenkins
 Brian Klopotek
 Patricia Krier
-Brian L. O’Neill
+Brian L. Oâ€™Neill
 
 Asian Studies:
 Ina Asim
@@ -113,7 +113,7 @@ Shawn R. Lockery
 V. Patteson Lombardi
 Svetlana Maslakova
 Cristopher M. Neill
-Peter M. O’Day
+Peter M. Oâ€™Day
 Patrick C. Phillips
 John H. Postlethwait
 William Roberts
@@ -279,10 +279,10 @@ James R. Crosswhite
 Dianne M. Dugaw
 Cecilia Enjuto Rangel
 Maram Epstein
-Pedro García-Caro
+Pedro GarcÃ­a-Caro
 Evlyn Gould
 D. Gantt Gurley
-Michael Hames-García
+Michael Hames-GarcÃ­a
 Kathleen Rowe Karlyn
 Linda Kintz
 Martin Klebes
@@ -389,7 +389,7 @@ Anne van den Nouweland
 Glen R. Waddell
 Caroline E. Weber
 Wesley W. Wilson
-Cathleen S. Leué
+Cathleen S. LeuÃ©
 Robert Campbell
 Henry N. Goldstein
 Jo Anna Gray
@@ -424,7 +424,7 @@ C. Anne Laskaya
 Stephanie LeMenager
 David Leiwei Li
 Quinn Miller
-Kathleen O’Fallon
+Kathleen Oâ€™Fallon
 Priscilla P. Ovalle
 Paul W. Peppis
 Forest Pyle
@@ -467,7 +467,7 @@ Louise Westling
 George Wickes
 Louise M. Bishop
 David A. Frank
-Michael Hames-García
+Michael Hames-GarcÃ­a
 Lee Rumbarger
 
 Environmental Studies:
@@ -605,10 +605,10 @@ Yizhao Yang
 Ethnic Studies:
 Charise L. Cheney
 Lynn H. Fujiwara
-Michael Hames-García
+Michael Hames-GarcÃ­a
 Daniel HoSang
 Brian Klopotek
-Ernesto J. Martínez
+Ernesto J. MartÃ­nez
 Irmary Reyes-Santos
 Edward Olivos
 Jeffrey Ostler
@@ -905,7 +905,7 @@ Shaul E. Cohen
 Frederick Colby
 Jane K. Cramer
 Robert L. Davis
-André Djiffack
+AndrÃ© Djiffack
 Christopher J. Ellis
 Maram Epstein
 John B. Foster
@@ -990,10 +990,10 @@ Mark Carey
 Cecilia Enjuto Rangel
 Juan A. Epple
 Linda O. Fuller
-Leonardo García-Pabón
+Leonardo GarcÃ­a-PabÃ³n
 Spike Gildea
 Amalia Gladhart
-Michael Hames-García
+Michael Hames-GarcÃ­a
 James Harper
 Robert S. Haskett
 Derrick Hindery
@@ -1029,7 +1029,7 @@ Doris L. Payne
 Eric W. Pederson
 Melissa Redford
 Cynthia M. Vakareliyska
-T. Givón
+T. GivÃ³n
 Russell S. Tomlin
 Gregory D. Anderson
 Dare A. Baldwin
@@ -1171,7 +1171,7 @@ Judith S. Eisen
 Clifford Kentros
 Charles B. Kimmel
 Shawn R. Lockery
-Peter M. O’Day
+Peter M. Oâ€™Day
 Cristopher Neill
 John H. Postlethwait
 William Roberts
@@ -1377,20 +1377,20 @@ Simone Da Silva
 Robert L. Davis
 Laurie deGonzalez
 Juanita Devereaux
-André Djiffack
+AndrÃ© Djiffack
 Paula Ellister
 Cecilia Enjuto Rangel
 Hilary Fisher
-Pedro García-Caro
-Leonardo García-Pabón
+Pedro GarcÃ­a-Caro
+Leonardo GarcÃ­a-PabÃ³n
 Amalia Gladhart
 Evlyn Gould
 Gina Herrmann
 Nathalie Hester
 Claudia Holguin
 Harinder Kaur Khalsa
-Mónica Lara
-Kelley León Howarth
+MÃ³nica Lara
+Kelley LeÃ³n Howarth
 Massimo Lollini
 Karen McPherson
 Shelley Merello
@@ -1409,7 +1409,7 @@ Melanie Williams
 Gloria Zabala
 Alex Zunterstein
 Randi M. Brox
-Françoise G. Calin
+FranÃ§oise G. Calin
 David J. Curland
 Richard H. Desroches
 Juan A. Epple
@@ -1513,7 +1513,7 @@ Women's and Gender Studies:
 Oluwakemi Balogun
 Yvonne A. Braun
 Lynn H. Fujiwara
-Ernesto J. Martínez
+Ernesto J. MartÃ­nez
 Judith Raiskin
 Elizabeth Reis
 Ellen K. Scott
