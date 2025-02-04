@@ -30,6 +30,7 @@ class WebScraper:
             url (str): The URL of the webpage to fetch.
             retries (int, optional): The number of times to retry fetching the webpage in case of failure. Defaults to 3.
             delay (int, optional): The delay in seconds between retries. Defaults to 60.
+            Added 60 seconds to the delay each retry.
 
         Returns:
             BeautifulSoup: A BeautifulSoup object containing the parsed HTML content of the webpage if the request is successful.
@@ -50,6 +51,7 @@ class WebScraper:
                 if i < retries - 1:
                     print(f"Retrying in {delay} seconds...")
                     time.sleep(delay)
+                    delay += 60
                 else:
                     print("Max retries exceeded.")
                     return None
@@ -105,7 +107,7 @@ def main():
                 print(f"Failed to fetch content for {department}")
                 break  # Stop the loop if a request fails
 
-        with open('faculty_list.txt', 'w') as file:
+        with open('faculty_list.txt', 'w', encoding='utf-8') as file:
             for dep, faculty in fac_list.items():
                 file.write(f"{dep}:\n")
                 for fac in faculty:

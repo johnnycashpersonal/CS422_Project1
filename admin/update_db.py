@@ -63,10 +63,12 @@ class DatabaseUpdater:
             is_regular: Boolean indicating if instructor is regular faculty
                       (defaults to True)
         """
-        self.db.instructors.update_one(
-            {'name': instructor_name},
-            {'$set': {'is_regular_faculty': is_regular}}
+        self.db.grade_distributions.update_many(
+            {'instructor_name': instructor_name},   # Match existing instructor names
+            {'$set': {'is_regular_faculty': is_regular}},   # Add/Update the field
+            upsert=False   # Do NOT create new entries, just update existing ones
         )
+
 
     def match_instructor_names(self, grade_data_names, faculty_names):
         """
