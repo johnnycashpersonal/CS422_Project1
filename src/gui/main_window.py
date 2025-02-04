@@ -12,6 +12,27 @@ class DualWindowApp:
         self.root.geometry("1800x900")
         self.root.configure(bg="#FFFFFF")
 
+        # Add department options
+        self.departments = [
+            "BI",    # Biology
+            "CH",    # Chemistry
+            "CIS",   # Computer and Info Science
+            "HPHY",  # Human Physiology
+            "MATH",  # Mathematics
+            "PHYS",  # Physics
+            "PSY"    # Psychology
+        ]
+        
+        # Add course levels
+        self.course_levels = [
+            "100-level",
+            "200-level",
+            "300-level",
+            "400-level",
+            "500-level",
+            "600-level"
+        ]
+
         self.db_manager = DatabaseManager()
 
         # Configure global styles
@@ -69,12 +90,19 @@ class DualWindowApp:
         fields_frame = ttk.Frame(header)
         fields_frame.pack(fill="x")
 
-        # Department field
+        # Department field (dropdown)
         dept_frame = ttk.Frame(fields_frame)
         dept_frame.pack(side="left", padx=5)
         ttk.Label(dept_frame, text="Department:").pack(side="left")
-        entries['department'] = ttk.Entry(dept_frame, width=15)
+        entries['department'] = ttk.Combobox(dept_frame, width=15, values=self.departments, state="readonly")
         entries['department'].pack(side="left", padx=2)
+
+        # Course Level field (dropdown)
+        level_frame = ttk.Frame(fields_frame)
+        level_frame.pack(side="left", padx=5)
+        ttk.Label(level_frame, text="Course Level:").pack(side="left")
+        entries['level'] = ttk.Combobox(level_frame, width=15, values=self.course_levels, state="readonly")
+        entries['level'].pack(side="left", padx=2)
 
         # Class Number field
         class_frame = ttk.Frame(fields_frame)
@@ -90,13 +118,15 @@ class DualWindowApp:
         entries['year'] = ttk.Entry(year_frame, width=8)
         entries['year'].pack(side="left", padx=2)
 
-        # Buttons
+        # Buttons frame
         buttons_frame = ttk.Frame(fields_frame)
         buttons_frame.pack(side="left", padx=5)
-        ttk.Button(buttons_frame, text="Show All", 
-                  command=lambda s=side: self.show_all_courses(s)).pack(side="left", padx=2)
+        
+        # Search buttons
         ttk.Button(buttons_frame, text="Search", 
                   command=lambda s=side: self.handle_search(s)).pack(side="left", padx=2)
+        ttk.Button(buttons_frame, text="Search by Level", 
+                  command=lambda s=side: self.handle_level_search(s)).pack(side="left", padx=2)
 
     def create_main_area(self, parent, side):
         # Create frame for the main area that will expand
@@ -148,49 +178,11 @@ class DualWindowApp:
         ttk.Button(footer, text="Admin Mode", 
                   command=self.toggle_admin_mode).pack(side="right", padx=5)
 
-    # [Previous methods for show_all_courses, handle_search, and toggle_admin_mode remain the same]
-    
-    def show_all_courses(self, side):
-        tree = self.left_tree if side == "left" else self.right_tree
-        
-        # Clear existing entries
-        for item in tree.get_children():
-            tree.delete(item)
-            
-        try:
-            pipeline = [
-                {"$group": {
-                    "_id": "$course_id",
-                    "avg_percent_a": {"$avg": "$percent_a"},
-                    "avg_percent_df": {"$avg": "$percent_df"},
-                    "instructor_count": {"$addToSet": "$instructor_name"},
-                    "total_classes": {"$sum": 1}
-                }},
-                {"$sort": {"_id": 1}}
-            ]
-            
-            results = list(self.db_manager.grade_distributions.aggregate(pipeline))
-            
-            for result in results:
-                tree.insert("", "end", values=(
-                    f"{len(result['instructor_count'])} instructors",
-                    result["_id"],
-                    f"{result['avg_percent_a']:.1f}",
-                    f"{result['avg_percent_df']:.1f}",
-                    result["total_classes"]
-                ))
-            
-            self.status_label.config(text=f"Status: Found {len(results)} courses")
-                
-        except Exception as e:
-            messagebox.showerror("Error", f"An error occurred: {str(e)}")
-            self.status_label.config(text="Status: Error fetching data")
-
     def handle_search(self, side):
         entries = self.left_entries if side == "left" else self.right_entries
         tree = self.left_tree if side == "left" else self.right_tree
         
-        department = entries['department'].get().strip().upper()
+        department = entries['department'].get().strip()
         class_num = entries['class'].get().strip()
         
         # Clear existing entries
@@ -199,7 +191,7 @@ class DualWindowApp:
             
         try:
             if not department:
-                messagebox.showerror("Error", "Please enter a department")
+                messagebox.showerror("Error", "Please select a department")
                 return
                 
             course_id = department + class_num if class_num else None
@@ -221,6 +213,65 @@ class DualWindowApp:
                     result["class_count"]
                 ))
                 
+            self.status_label.config(text=f"Status: Found {len(results)} results")
+                
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred: {str(e)}")
+            self.status_label.config(text="Status: Error fetching data")
+
+    def handle_level_search(self, side):
+        entries = self.left_entries if side == "left" else self.right_entries
+        tree = self.left_tree if side == "left" else self.right_tree
+        
+        department = entries['department'].get().strip()
+        level_text = entries['level'].get().strip()
+        
+        if not department:
+            messagebox.showerror("Error", "Please select a department")
+            return
+            
+        if not level_text:
+            messagebox.showerror("Error", "Please select a course level")
+            return
+            
+        # Extract the level number from the selection (e.g., "300-level" -> "3")
+        level_num = level_text[0]
+        
+        # Clear existing entries
+        for item in tree.get_children():
+            tree.delete(item)
+            
+        try:
+            # Query for courses with matching department and level
+            pipeline = [
+                {"$match": {
+                    "course_id": {
+                        "$regex": f"^{department}{level_num}"
+                    }
+                }},
+                {"$group": {
+                    "_id": {
+                        "instructor": "$instructor_name",
+                        "course": "$course_id"
+                    },
+                    "avg_percent_a": {"$avg": "$percent_a"},
+                    "avg_percent_df": {"$avg": "$percent_df"},
+                    "class_count": {"$sum": 1}
+                }},
+                {"$sort": {"_id.instructor": 1}}
+            ]
+            
+            results = list(self.db_manager.grade_distributions.aggregate(pipeline))
+            
+            for result in results:
+                tree.insert("", "end", values=(
+                    result["_id"]["instructor"],
+                    result["_id"]["course"],
+                    f"{result['avg_percent_a']:.1f}",
+                    f"{result['avg_percent_df']:.1f}",
+                    result["class_count"]
+                ))
+            
             self.status_label.config(text=f"Status: Found {len(results)} results")
                 
         except Exception as e:
