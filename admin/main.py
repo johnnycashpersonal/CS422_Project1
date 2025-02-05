@@ -5,7 +5,7 @@ import subprocess
 from src.data.db_manager import DatabaseManager
 from admin.import_data import DataImporter
 import admin.scrape_faculty
-import admin.resolve_discrepancies
+from admin.resolve_discrepancies import NameStandardizer
 
 # Initialize database manager and data importer
 db = DatabaseManager()
@@ -69,14 +69,17 @@ class AdminWindow:
         print("Faculty scraping initiated.")
         print("Working...")
         admin.scrape_faculty.main()
-
-        print("Faculty scraping initiated.")
+        self.print_button.config(text="Scrape for faculty")
+        print("Scrape for faculty complete")
     
     def run_resolve_discrepancies(self):
         """Runs the resolve_discrepancies.py script."""
+        self.resolve_button.config(text="Working...")
         print("Working (this will take some time)...")
-        admin.resolve_discrepancies.main()
+        standardizer = NameStandardizer("faculty_list.txt")
+        standardizer.update_db_instructors()
         print("DONE.")
+        self.resolve_button.config(text="Resolve Discrepancies")
     
         
 

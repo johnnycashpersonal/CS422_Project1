@@ -98,6 +98,7 @@ class NameStandardizer:
         """Standardize instructor names and update faculty status in the database."""
 
         db_names = self.db.grade_distributions.distinct("instructor_name")
+        
 
         for old_name in db_names:
             standardized_tuple = self.standardize_instructor_name(old_name)  
@@ -127,8 +128,7 @@ class NameStandardizer:
         return " ".join(filter(None, name_tuple))
     
 def main():
-    standardizer = NameStandardizer("faculty_list.txt")
-    standardizer.update_db_instructors()
+    print("init")
     
 if __name__ == "__main__":
     main()
