@@ -8,6 +8,7 @@ echo "Starting setup..."
 export PYTHONPATH=src:$PYTHONPATH
 
 echo "Starting virtual enviornment"
+python3 -m venv venv
 source venv/bin/activate
 
 echo "Starting mongodb"

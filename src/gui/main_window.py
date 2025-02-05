@@ -4,6 +4,7 @@ from tkinter import messagebox
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from src.data.db_manager import DatabaseManager
+from admin.import_data import DataImporter
 
 class DualWindowApp:
     def __init__(self, root):
@@ -43,6 +44,8 @@ class DualWindowApp:
         ]
 
         self.db_manager = DatabaseManager()
+        importer = DataImporter(self.db_manager)
+        importer.import_grade_data("src/data/gradedata.js")
 
         # Configure global styles
         self.style = ttk.Style()
@@ -476,9 +479,6 @@ class DualWindowApp:
         fig.tight_layout()
         canvas.draw()
 
-    def toggle_admin_mode(self):
-        """Toggle admin mode"""
-        messagebox.showinfo("Admin Mode", "Admin mode toggled.")
 
 if __name__ == "__main__":
     root = tk.Tk()
