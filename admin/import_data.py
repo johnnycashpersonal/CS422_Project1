@@ -29,7 +29,10 @@ class DataImporter:
         try:
             with open(json_file_path, 'r', encoding='utf-8') as file:
                 # load json from file !!!weird split stuff is to trim the extra JS!!!
-                data = json.loads(file.read().split("= ")[1].split(";")[0])
+                if ".json" in json_file_path.lower():
+                    data = json.loads(file.read())
+                else:
+                    data = json.loads(file.read().split("= ")[1].split(";")[0])
         except (json.JSONDecodeError, FileNotFoundError) as e:
             raise ValueError(f"Error reading JSON file: {e}")
         

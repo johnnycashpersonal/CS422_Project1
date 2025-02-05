@@ -1,9 +1,11 @@
 import sys
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
+import admin.resolve_discrepancies
 from src.data.db_manager import DatabaseManager
 from admin.import_data import DataImporter
 import admin.scrape_faculty
+import admin.resolve_discrepancies
 
 # Initialize database manager and data importer
 db = DatabaseManager()
@@ -15,7 +17,7 @@ class AdminWindow:
     """
     def __init__(self, root):
         self.root = root
-        self.root.title("File Selector App")
+        self.root.title("Admininstrator")
         self.root.geometry("300x150")
         self.root.configure(bg="#FFFFFF")
         
@@ -58,11 +60,17 @@ class AdminWindow:
     def scrape_faculty(self):
         """Triggers faculty data scraping."""
         self.print_button.config(text="Working...")
+        print("Faculty scraping initiated.")
         print("Working...")
         admin.scrape_faculty.main()
-        print("Faculty scraping initiated.")
+        admin.resolve_discrepancies.main()
+        
+        self.print_button.config(text="Scrape for faculty")
 
-if __name__ == "__main__":
+def main():
     root = tk.Tk()
     app = AdminWindow(root)
     root.mainloop()
+
+if __name__ == "__main__":
+    main()
