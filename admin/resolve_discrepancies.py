@@ -117,7 +117,7 @@ class NameStandardizer:
                 {'$set': {'is_regular_faculty': is_faculty}}
             )
 
-            print(f"Updated {old_name} to {new_name}: is_regular_faculty={is_faculty}")
+            # print(f"Updated {old_name} to {new_name}: is_regular_faculty={is_faculty}")
 
         print("Database update complete.")
 
@@ -125,8 +125,11 @@ class NameStandardizer:
     def untuple(self,name_tuple):
         """Converts a tuple of names into a string."""
         return " ".join(filter(None, name_tuple))
+    
+def main():
+    standardizer = NameStandardizer("faculty_list.txt")
+    standardizer.update_db_instructors()
 
 # Example usage
 if __name__ == "__main__":
-    standardizer = NameStandardizer("faculty_list.txt")
-    standardizer.update_db_instructors()
+    main()
