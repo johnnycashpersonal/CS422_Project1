@@ -17,8 +17,10 @@ class AdminWindow:
     """
     def __init__(self, root):
         self.root = root
+
         self.root.title("File Selector App")
         self.root.geometry("300x200")
+
         self.root.configure(bg="#FFFFFF")
         
         self.style = ttk.Style()
@@ -64,8 +66,10 @@ class AdminWindow:
     def scrape_faculty(self):
         """Triggers faculty data scraping."""
         self.print_button.config(text="Working...")
+        print("Faculty scraping initiated.")
         print("Working...")
         admin.scrape_faculty.main()
+
         print("Faculty scraping initiated.")
     
     def run_resolve_discrepancies(self):
@@ -76,7 +80,10 @@ class AdminWindow:
     
         
 
-if __name__ == "__main__":
+def main():
     root = tk.Tk()
     app = AdminWindow(root)
     root.mainloop()
+
+if __name__ == "__main__":
+    main()

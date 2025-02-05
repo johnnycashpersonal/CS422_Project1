@@ -129,7 +129,6 @@ class NameStandardizer:
 def main():
     standardizer = NameStandardizer("faculty_list.txt")
     standardizer.update_db_instructors()
-
-# Example usage
+    
 if __name__ == "__main__":
     main()
