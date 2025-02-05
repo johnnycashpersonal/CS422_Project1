@@ -123,6 +123,16 @@ class DualWindowApp:
             command=self.update_all_graphs
         ).pack(side=tk.LEFT, padx=20, pady=5)
 
+        # Checkbox for filtering Regular Faculty
+        self.regular_faculty_var = tk.BooleanVar(value=False)
+        ttk.Checkbutton(
+            self.control_panel,
+            text="Show Only Regular Faculty",
+            variable=self.regular_faculty_var,
+            command=self.update_all_graphs  # This will now pass the correct boolean
+        ).pack(side=tk.LEFT, padx=20, pady=5)
+
+
     def create_graph(self, parent, side):
         """Create a matplotlib graph in the given frame"""
         # Create container for graph and navigation
@@ -204,10 +214,11 @@ class DualWindowApp:
         button_frame = ttk.Frame(parent)
         button_frame.grid(row=2, column=0, columnspan=4, pady=10)
         
-        ttk.Button(button_frame, text="Search", 
-                  command=lambda s=side: self.handle_search(s)).pack(side=tk.LEFT, padx=5)
-        ttk.Button(button_frame, text="Search by Level", 
-                  command=lambda s=side: self.handle_level_search(s)).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="Search",
+                command=lambda s=side: self.handle_search(s, self.regular_faculty_var.get())).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="Search by Level",
+                command=lambda s=side: self.handle_level_search(s, self.regular_faculty_var.get())).pack(side=tk.LEFT, padx=5)
+
 
     def create_footer(self):
         """Create footer with status and admin button"""
@@ -276,48 +287,60 @@ class DualWindowApp:
             
             self.update_side_graph(side, results)
 
-    def handle_search(self, side):
-        """Handle search by course number"""
+    def handle_search(self, side, regular_faculty):
+        """Handles searching by course number with an optional filter for Regular Faculty."""
         entries = self.left_entries if side == "left" else self.right_entries
-        
+
         department = entries['department'].get().strip()
         class_num = entries['class'].get().strip()
         year = entries['year'].get().strip()
-        
+
+        if not department:
+            messagebox.showerror("Error", "Please select a department")
+            return
+
+        course_id = department + class_num if class_num else None
+
         try:
-            if not department:
-                messagebox.showerror("Error", "Please select a department")
-                return
-                
-            course_id = department + class_num if class_num else None
-            
-            # Modify pipeline to group by instructor if searching for specific course
-            if course_id:
-                match_conditions = {"course_id": course_id}
-                if year:
-                    try:
-                        year_num = int(year)
-                        match_conditions["year"] = year_num
-                    except ValueError:
-                        messagebox.showerror("Error", "Year must be a valid number")
-                        return
-                        
-                pipeline = [
-                    {"$match": match_conditions},
-                    {"$group": {
-                        "_id": "$instructor_name",
-                        "avg_percent_a": {"$avg": "$percent_a"},
-                        "avg_percent_df": {"$avg": "$percent_df"},
-                        "class_count": {"$sum": 1}
-                    }},
-                    {"$sort": {"avg_percent_a": -1}}
-                ]
-                
-                results = list(self.db_manager.grade_distributions.aggregate(pipeline))
-            else:
-                # For department-wide search, use existing department stats
-                results = self.db_manager.get_department_stats(department)
-                
+            # Construct the base match condition
+            match_conditions = {}
+
+            # Ensure the department filter is properly applied
+            if department:
+                match_conditions["course_id"] = {"$regex": f"^{department}"}  # Matches BI101, BI202, etc.
+
+            if class_num:
+                match_conditions["course_id"] = department + class_num  # Exact course filter
+
+            if year:
+                try:
+                    match_conditions["year"] = int(year)
+                except ValueError:
+                    messagebox.showerror("Error", "Year must be a valid number")
+                    return
+
+            # Build the aggregation pipeline
+            pipeline = [{"$match": match_conditions}]
+
+        
+            # if we're checking if its reg that add this in there
+            if regular_faculty:
+                pipeline.append({"$match": {"is_regular_faculty": True}})  # Move filter into pipeline
+
+            # Continue the aggregation
+            pipeline.extend([
+                {"$group": {
+                    "_id": "$instructor_name",
+                    "avg_percent_a": {"$avg": "$percent_a"},
+                    "avg_percent_df": {"$avg": "$percent_df"},
+                    "class_count": {"$sum": 1}
+                }},
+                {"$sort": {"avg_percent_a": -1}}
+            ])
+
+            # Execute the query
+            results = list(self.db_manager.grade_distributions.aggregate(pipeline))
+
             # Reset pagination and store current results
             if side == "left":
                 self.left_page = 0
@@ -325,43 +348,51 @@ class DualWindowApp:
             else:
                 self.right_page = 0
                 self.right_current_results = results
-                
+
             self.update_side_graph(side, results)
             total_pages = (len(results) - 1) // self.results_per_page + 1
             self.status_label.config(text=f"Status: Found {len(results)} results ({total_pages} pages)")
-                
+
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
             self.status_label.config(text="Status: Error fetching data")
 
-    def handle_level_search(self, side):
-        """Handle search by course level"""
+    def handle_level_search(self, side, regular_faculty):
+        """Handles searching by course level with an optional filter for Regular Faculty."""
         entries = self.left_entries if side == "left" else self.right_entries
-        
+
         department = entries['department'].get().strip()
         level_text = entries['level'].get().strip()
         year = entries['year'].get().strip()
-        
+        regular_faculty = self.regular_faculty_var.get() 
+
         if not department or not level_text:
             messagebox.showerror("Error", "Please select both department and course level")
             return
-            
+
         try:
-            regex_pattern = f"^{department}"
+            # Build regex pattern for matching course levels
+            regex_pattern = f"^{department}"  # Default to all courses in department
             if level_text != "Show All":
-                level_num = level_text[0]
-                regex_pattern = f"^{department}{level_num}"
-                
-            # Add year filter to pipeline if year is provided
+                level_num = level_text[0]  # Extract first character (1, 2, 3, etc.)
+                regex_pattern = f"^{department}{level_num}"  # Matches BI1xx, BI2xx, etc.
+
+            # Construct match conditions
             match_conditions = {"course_id": {"$regex": regex_pattern}}
+
+            # Apply year filter if provided
             if year:
                 try:
-                    year_num = int(year)
-                    match_conditions["year"] = year_num
+                    match_conditions["year"] = int(year)
                 except ValueError:
                     messagebox.showerror("Error", "Year must be a valid number")
                     return
-                    
+
+            # if we're checking if its reg that add this in there
+            if regular_faculty:
+                match_conditions["is_regular_faculty"] = True
+
+            # Build aggregation pipeline
             pipeline = [
                 {"$match": match_conditions},
                 {"$group": {
@@ -373,24 +404,26 @@ class DualWindowApp:
                 }},
                 {"$sort": {"avg_percent_a": -1}}
             ]
-            
+
+
+            # execute the query ig
             results = list(self.db_manager.grade_distributions.aggregate(pipeline))
-            
-            # Reset pagination when new search is performed
+
             if side == "left":
                 self.left_page = 0
                 self.left_current_results = results
             else:
                 self.right_page = 0
                 self.right_current_results = results
-                
+
             self.update_side_graph(side, results)
             total_pages = (len(results) - 1) // self.results_per_page + 1
             self.status_label.config(text=f"Status: Found {len(results)} results ({total_pages} pages)")
-                
+
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
             self.status_label.config(text="Status: Error fetching data")
+
 
     def update_side_graph(self, side, results):
         """Update graph for one side with the search results"""
