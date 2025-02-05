@@ -21,6 +21,16 @@ class WebScraper:
     """
     def __init__(self, base_url):
         self.base_url = base_url
+        self.natural_sciences = ["anthropology",
+                    "biology",
+                    "chemistry",
+                    "computerandinfoscience",
+                    "geography",
+                    "geologicalsciences",
+                    "humanphysiology",
+                    "mathematics",
+                    "physics", 
+                    "psychology"]
 
     def get_code(self, url, retries=3, delay=60):
         """
@@ -93,9 +103,14 @@ def main():
     soup = scraper.get_code(start_url)
     if soup:
         dep = scraper.get_departments(soup)
+        natural_dep =[]
+        for department in dep:
+                for science in scraper.natural_sciences:
+                    if science in department:
+                        natural_dep.append(department)
 
         fac_list = {}
-        for department in dep:
+        for department in natural_dep:
             dep_soup = scraper.get_code(department)
             if dep_soup:
                 dep_name = dep_soup.find('title').text

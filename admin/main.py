@@ -1,7 +1,7 @@
 import sys
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
-import admin.resolve_discrepancies
+import subprocess
 from src.data.db_manager import DatabaseManager
 from admin.import_data import DataImporter
 import admin.scrape_faculty
@@ -17,8 +17,10 @@ class AdminWindow:
     """
     def __init__(self, root):
         self.root = root
-        self.root.title("Admininstrator")
-        self.root.geometry("300x150")
+
+        self.root.title("File Selector App")
+        self.root.geometry("300x200")
+
         self.root.configure(bg="#FFFFFF")
         
         self.style = ttk.Style()
@@ -31,6 +33,10 @@ class AdminWindow:
         # faculty scraping
         self.print_button = ttk.Button(root, text="Scrape for faculty", command=self.scrape_faculty)
         self.print_button.pack(pady=10)
+        
+        # resolve discrepancies
+        self.resolve_button = ttk.Button(root, text="Resolve Discrepancies", command=self.run_resolve_discrepancies)
+        self.resolve_button.pack(pady=10)
     
     def configure_styles(self):
         """Configures the styles for UI elements."""
@@ -63,9 +69,16 @@ class AdminWindow:
         print("Faculty scraping initiated.")
         print("Working...")
         admin.scrape_faculty.main()
+
+        print("Faculty scraping initiated.")
+    
+    def run_resolve_discrepancies(self):
+        """Runs the resolve_discrepancies.py script."""
+        print("Working (this will take some time)...")
         admin.resolve_discrepancies.main()
+        print("DONE.")
+    
         
-        self.print_button.config(text="Scrape for faculty")
 
 def main():
     root = tk.Tk()
